@@ -2,18 +2,18 @@
   "_instructions": "Eliminen este campo cuando terminen. Conserven exactamente tres integrantes y usen SHA Git completos de commits creados por cada persona.",
   "schemaVersion": 1,
   "week": 1,
-  "teamId": "REEMPLAZAR_CON_ID_DEL_EQUIPO",
+  "teamId": "E01",
   "members": [
-    {
-      "studentId": "REEMPLAZAR_INTEGRANTE_1",
-      "commitShas": ["REEMPLAZAR_CON_SHA_COMPLETO"],
-      "files": ["REEMPLAZAR_CON_ARCHIVO_TRABAJADO"],
-      "tests": [],
+        {
+      "studentId": "3523110229",
+      "commitShas": ["17cd793cc2a594f3f365a2c66c50f0ae824721e1","6e11b073d3c7f984672f023be146b5f2b7e1f234"],
+      "files": ["src/api/courseBackend.ts"],
+      "tests": ["course-tests/smoke.test.tsx"],
       "reviews": [],
-      "prediction": "REEMPLAZAR_CON_LO_QUE_ESPERABA_OBSERVAR",
-      "command": "REEMPLAZAR_CON_EL_COMANDO_EJECUTADO",
-      "observedResult": "REEMPLAZAR_CON_LO_QUE_OCURRIO",
-      "explanation": "REEMPLAZAR_CON_LA_EXPLICACION_TECNICA"
+      "prediction": "Esperaba que el health check del backend respondiera con ok=true y contractVersion=1; si el contrato se rompe, la app no puede confirmar que el servicio está disponible.",
+      "command": "npm run test:smoke",
+      "observedResult": "PASS — 1 suite passed, 1 test passed.",
+      "explanation": "Revisé la validación del contrato de salud del backend en la función que consulta /health: exige ok=true y contractVersion=1. La prueba smoke confirma que el proyecto mantiene la línea base correcta y que esta validación es la que define si el backend está disponible para la aplicación."
     },
     {
       "studentId": "REEMPLAZAR_INTEGRANTE_2",

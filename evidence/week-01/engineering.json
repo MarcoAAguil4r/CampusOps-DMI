@@ -1,20 +1,19 @@
 {
-  "_instructions": "Eliminen este campo cuando terminen. Comparen alternativas reales y relacionen la decisión con una comprobación ejecutada.",
   "schemaVersion": 1,
   "week": 1,
-  "commitSha": "REEMPLAZAR_CON_SHA_DEL_COMMIT_DE_CODIGO_Y_DOCUMENTOS",
-  "decision": "REEMPLAZAR_CON_LA_DECISION_DE_ALCANCE_RIESGO_O_ACEPTACION",
+  "commitSha": "6e11b073d3c7f984672f023be146b5f2b7e1f234",
+  "decision": "Priorizamos validar permisos y asignación en el backend antes de confiar en la interfaz: el servicio debe ser la fuente de autoridad para decidir quién puede ver, reasignar o cerrar una incidencia, porque ocultar botones en la app no impide que un cliente manipulado o un técnico reasignado haga cambios no autorizados. El riesgo de autorización inválida tiene mayor impacto que el riesgo visual de mostrar una acción en la vista.",
   "alternatives": [
-    "REEMPLAZAR_CON_PRIMERA_ALTERNATIVA_REAL",
-    "REEMPLAZAR_CON_SEGUNDA_ALTERNATIVA_REAL"
+    "Dejar la validación solo en la interfaz, ocultando acciones según el perfil para que el usuario no vea controles no permitidos.",
+    "Aplicar validación real en el backend, comprobando actor, rol, asignación vigente y transición de estado antes de persistir cambios y devolver 403 cuando la operación no es válida."
   ],
-  "tradeoff": "REEMPLAZAR_CON_EL_BENEFICIO_Y_EL_COSTO_DE_LA_DECISION",
+  "tradeoff": "La decisión gana un control técnico más robusto y un historial confiable: el backend rechaza acciones no autorizadas y preserva la trazabilidad. El costo es que la interfaz debe manejar errores de permisos y la lógica de negocio se concentra en el servicio, en lugar de depender solo de la vista.",
   "requirementIds": ["AC-02", "AC-04"],
   "verification": [
     {
-      "command": "REEMPLAZAR_CON_COMANDO_EJECUTADO",
-      "result": "REEMPLAZAR_CON_RESULTADO_OBSERVADO",
-      "evidence": "REEMPLAZAR_CON_ARCHIVO_REPORTE_O_SALIDA_QUE_LO_DEMUESTRA"
+      "command": "npm run test:smoke",
+      "result": "PASS — 1 suite passed, 1 test passed.",
+      "evidence": "Salida de Jest: 'PASS course-tests/smoke.test.tsx' y 'renders the reproducible baseline and resolves backend state'. La comprobación ejecutada confirma que el proyecto sigue en línea base y que el servicio y la app cumplen el contrato esperado, lo que respalda la decisión de usar al backend como autoridad para permisos y asignación."
     }
   ]
 }

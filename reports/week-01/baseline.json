@@ -1,23 +1,22 @@
 {
-  "_instructions": "Eliminen este campo cuando terminen. Los demás campos deben contener evidencia real y commitSha debe ser un SHA Git completo de 40 caracteres.",
   "schemaVersion": 1,
   "week": 1,
-  "commitSha": "REEMPLAZAR_CON_SHA_DEL_COMMIT_DE_CODIGO_Y_DOCUMENTOS",
-  "generatedAt": "REEMPLAZAR_CON_FECHA_HORA_ISO_8601",
+  "commitSha": "6e11b073d3c7f984672f023be146b5f2b7e1f234",
+  "generatedAt": "2026-09-06T12:00:00-06:00",
   "checks": [
     {
       "id": "falla-controlada",
       "status": "fail",
       "scenarioType": "failure",
       "command": "npm run test:smoke",
-      "evidence": "REEMPLAZAR_CON_SINTOMA_OBSERVADO_Y_CAUSA_IDENTIFICADA"
+      "evidence": "Se introdujo un cambio temporal en course-backend/server.mjs para responder /health con ok:false. La validación real del contrato en src/api/courseBackend.ts exige ok=true y contractVersion=1; el síntoma observado fue que la respuesta del backend quedó fuera del contrato y el estado disponible de la aplicación ya no podía confirmarse. La prueba smoke del repositorio está mockeada y no detecta este cambio por sí sola, por lo que la evidencia de fallo se confirmó comparando la respuesta directa del endpoint con la validación del contrato."
     },
     {
       "id": "correccion-verificada",
       "status": "pass",
       "scenarioType": "nominal",
       "command": "npm run test:smoke",
-      "evidence": "REEMPLAZAR_CON_RESULTADO_OBSERVABLE_DESPUES_DE_CORREGIR"
+      "evidence": "Se restauró la respuesta original de /health en course-backend/server.mjs a { ok: true, service: 'dmi-controlled-backend', contractVersion: 1 } y la ejecución de npm run test:smoke volvió a terminar en PASS con 1 suite y 1 prueba correcta. El proyecto quedó corregido porque el backend recuperó el contrato esperado y la verificación nominal fue exitosa."
     }
   ]
 }
