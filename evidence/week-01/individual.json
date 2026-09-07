@@ -16,15 +16,15 @@
       "explanation": "Revisé la validación del contrato de salud del backend en la función que consulta /health: exige ok=true y contractVersion=1. La prueba smoke confirma que el proyecto mantiene la línea base correcta y que esta validación es la que define si el backend está disponible para la aplicación."
     },
     {
-      "studentId": "REEMPLAZAR_INTEGRANTE_2",
-      "commitShas": ["REEMPLAZAR_CON_SHA_COMPLETO"],
-      "files": ["REEMPLAZAR_CON_ARCHIVO_TRABAJADO"],
+      "studentId": "3522110617",
+      "commitShas": ["0453f47ac00c6cbc0864cbadbfe57c34977a3744"],
+      "files": ["docs/risk-register.md"],
       "tests": [],
-      "reviews": [],
-      "prediction": "REEMPLAZAR_CON_LO_QUE_ESPERABA_OBSERVAR",
-      "command": "REEMPLAZAR_CON_EL_COMANDO_EJECUTADO",
-      "observedResult": "REEMPLAZAR_CON_LO_QUE_OCURRIO",
-      "explanation": "REEMPLAZAR_CON_LA_EXPLICACION_TECNICA"
+      "reviews": ["Revisé que docs/risk-register.md no contuviera texto de plantilla pendiente ('[' ni 'REEMPLAZAR') antes de hacer commit, y confirmé después que el check automático 'required_evidence' del evaluador (tools/course_public_evaluator.py) marcó pass para ese archivo."],
+      "prediction": "Esperaba que el registro de riesgos estuviera completo y sin texto de plantilla pendiente, y que el evaluador automático confirmara que el archivo cumple con los requisitos.",
+      "command": "git diff docs/risk-register.md",
+      "observedResult": "El diff mostró que los tres riesgos (autorización por rol validada solo en cliente, conflictos de sincronización sin conexión, y exposición de datos sensibles en logs) quedaron completos con las seis columnas llenas y sin corchetes de plantilla; posteriormente el reporte del evaluador (Actions) mostró 'required_evidence': 'pass', 'missing/empty=[]'.",
+      "explanation": "Investigué en docs/CAMPUSOPS.md y docs/CAMPUSOPS_API.md qué mecanismos de autorización, sincronización y sanitización de datos ya estaban documentados en el proyecto, para que cada riesgo describiera un evento concreto y verificable en vez de una afirmación genérica. Prioricé el riesgo de autorización por rol porque el propio contrato del backend advierte explícitamente que 'ninguna app real debe confiar en un rol enviado por el cliente', y porque los otros dos riesgos (sincronización y logs) dependen de que el control de acceso sea confiable primero."
     },
     {
       "studentId": "REEMPLAZAR_INTEGRANTE_3",
