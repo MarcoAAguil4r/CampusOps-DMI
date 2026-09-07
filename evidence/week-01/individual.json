@@ -6,8 +6,8 @@
   "members": [
         {
       "studentId": "3523110229",
-      "commitShas": ["17cd793cc2a594f3f365a2c66c50f0ae824721e1","6e11b073d3c7f984672f023be146b5f2b7e1f234"],
-      "files": ["src/api/courseBackend.ts"],
+      "commitShas": ["e86179c","17cd793","6e11b07"],
+      "files": "src/api/courseBackend.ts",
       "tests": ["course-tests/smoke.test.tsx"],
       "reviews": [],
       "prediction": "Esperaba que el health check del backend respondiera con ok=true y contractVersion=1; si el contrato se rompe, la app no puede confirmar que el servicio está disponible.",
