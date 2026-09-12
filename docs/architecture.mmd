@@ -1,0 +1,15 @@
+flowchart TD
+    UI[UI: pantallas y estados] --> APP[Application: casos de uso]
+    APP --> DOMAIN[Domain: incidencias, sesión y puertos]
+    INFRA[Infrastructure: backend, persistencia y ubicación] --> DOMAIN
+    APP --> INCIDENTS[Incident use cases]
+    APP --> SESSION[Session use cases]
+    APP --> STORAGE[Persistence port]
+    APP --> LOCATION[Location port]
+    INFRA --> STORAGE
+    INFRA --> LOCATION
+    INFRA --> BACKEND[CampusOps backend adapter]
+
+    REPORTER[Reportante] -.-> UI
+    TECHNICIAN[Técnico] -.-> UI
+    COORDINATOR[Coordinador] -.-> UI
