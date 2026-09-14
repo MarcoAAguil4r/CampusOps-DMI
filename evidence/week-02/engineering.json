@@ -1,0 +1,29 @@
+{
+  "schemaVersion": 1,
+  "week": 2,
+  "commitSha": "7a5c3678a863bd7846fdbce4a07303141dce0e5a",
+  "decision": "El equipo adoptó una arquitectura por capas con puertos y adaptadores (ADR-001): la UI invoca casos de uso de application, application depende de contratos definidos en domain, e infrastructure implementa esos contratos y se inyecta en el punto de composicion. Se eligió esta opción sobre una arquitectura por funcionalidad con acceso directo a servicios porque CampusOps necesita probar las reglas de incidencias sin depender de React Native, red o almacenamiento real, y sustituir proveedores (backend, persistencia, ubicación) sin reescribir las pantallas.",
+  "alternatives": [
+    "Alternativa A (elegida): arquitectura por capas con puertos y adaptadores. La UI invoca casos de uso de application; application coordina el flujo y depende de contratos del domain; los adaptadores concretos viven en infrastructure y se inyectan mediante esos contratos.",
+    "Alternativa B (descartada): arquitectura por funcionalidad con acceso directo a servicios. Cada pantalla agrupa su propio estado, reglas y llamadas HTTP o almacenamiento; es más rápida para un prototipo pequeño, pero cada pantalla conoce detalles externos y las pruebas necesitan sustituir más comportamiento concreto."
+  ],
+  "tradeoff": "Beneficio: las reglas de incidencias se pueden probar sin React Native, red ni almacenamiento real, un proveedor de backend/persistencia/ubicación puede cambiarse implementando el mismo contrato, y la dirección de dependencias queda visible, reduciendo el acoplamiento de las pantallas. Costo: hay que crear interfaces, una composición inicial y adaptadores pequeños antes de añadir cada proveedor, resultando en más archivos que una pantalla monolítica. Como riesgo heredado, el chequeo de salud del backend en la UI original no pasaba por un caso de uso de application (dependencia heredada señalada en el propio ADR-001), lo cual se corrigió durante el esqueleto: BackendHealthPort se reubicó de application a domain/ports para que infrastructure dependiera de domain, no de application.",
+  "requirementIds": ["AC-01", "AC-02", "AC-03", "AC-04"],
+  "verification": [
+    {
+      "command": "npm test -- --ci --runInBand course-tests/public/week-02.test.ts",
+      "result": "1 passed, 1 total (architecture exposes boundaries and no direct UI-to-infrastructure edge)",
+      "evidence": "course-tests/public/week-02.test.ts confirma que src/ui/IncidentApp.tsx no importa directamente ningún módulo de src/infrastructure, cumpliendo el limite UI -> application definido en ADR-001."
+    },
+    {
+      "command": "Select-String -Path src/infrastructure/CourseBackendHealthAdapter.ts -Pattern \"from '../application\"",
+      "result": "Sin coincidencias tras la correccion (con coincidencia en el commit anterior, ver reports/week-02/dependencies.json)",
+      "evidence": "Confirma que el adaptador de infraestructura ya no depende de application, sino de domain/ports/BackendHealthPort.ts, restableciendo la dirección INFRA --> DOMAIN declarada en docs/architecture.mmd."
+    },
+    {
+      "command": "npm run typecheck",
+      "result": "tsc --noEmit finaliza sin errores",
+      "evidence": "Confirma que la reubicación del contrato BackendHealthPort no rompió las reglas ni los formatos de los datos del proyecto tras aplicar la decisión de arquitectura."
+    }
+  ]
+}
