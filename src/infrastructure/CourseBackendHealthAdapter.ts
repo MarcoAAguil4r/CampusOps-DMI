@@ -1,4 +1,4 @@
-import type { BackendHealthPort } from '../application/CampusOpsApplication';
+import type { BackendHealthPort } from '../domain/ports/BackendHealthPort';
 import { getBackendHealth } from '../api/courseBackend';
 
 export class CourseBackendHealthAdapter implements BackendHealthPort {

@@ -1,6 +1,4 @@
-export interface BackendHealthPort {
-  check(): Promise<void>;
-}
+import type { BackendHealthPort } from '../domain/ports/BackendHealthPort';
 
 export class CampusOpsApplication {
   public constructor(private readonly backendHealth: BackendHealthPort) {}
