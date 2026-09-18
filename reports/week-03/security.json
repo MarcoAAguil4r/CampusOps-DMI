@@ -1,0 +1,43 @@
+{
+  "schemaVersion": 1,
+  "week": 3,
+  "commitSha": "83b430922f0629f89fd428a82284857ebbfc951a",
+  "generatedAt": "2026-09-18T04:14:08.7317731Z",
+  "checks": [
+    {
+      "id": "typecheck",
+      "status": "pass",
+      "scenarioType": "nominal",
+      "command": "npm run typecheck",
+      "evidence": "Proceso terminado correctamente sin errores de TypeScript."
+    },
+    {
+      "id": "lint",
+      "status": "pass",
+      "scenarioType": "nominal",
+      "command": "npm run lint",
+      "evidence": "Proceso ESLint terminado correctamente sin diagnósticos."
+    },
+    {
+      "id": "public-and-smoke-tests",
+      "status": "pass",
+      "scenarioType": "nominal",
+      "command": "npm test -- --ci --runInBand course-tests/smoke.test.tsx course-tests/public/week-03.test.ts",
+      "evidence": "2 suites passed y 3 tests passed."
+    },
+    {
+      "id": "dependency-audit",
+      "status": "pass",
+      "scenarioType": "boundary",
+      "command": "npm run audit:ci",
+      "evidence": "El comando terminó con código 0 porque el umbral configurado es critical; npm audit dejó una advertencia visible de 2 vulnerabilidades high transitivas en @xmldom/xmldom y js-yaml, con npm audit fix como remediación sugerida."
+    },
+    {
+      "id": "workflow-public-test",
+      "status": "pass",
+      "scenarioType": "boundary",
+      "command": "npm test -- --ci --runInBand course-tests/public/week-03.test.ts",
+      "evidence": "La prueba confirmó permisos mínimos y comprobaciones obligatorias del workflow, además de activos, amenazas, controles y verificación en docs/threat-model.md."
+    }
+  ]
+}

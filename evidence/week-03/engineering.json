@@ -1,0 +1,25 @@
+{
+  "schemaVersion": 1,
+  "week": 3,
+  "commitSha": "83b430922f0629f89fd428a82284857ebbfc951a",
+  "decision": "Atender primero la amenaza de autorización de incidencias ajenas mediante controles en el servicio y pruebas negativas, porque una interfaz que solo oculta botones no impide que un cliente manipulado consulte o altere recursos. El modelo vincula esta decisión con el actor, el rol, la asignación vigente, la transición de estado y una respuesta 403 sin mutación.",
+  "alternatives": [
+    "Confiar principalmente en la interfaz móvil para ocultar acciones según el perfil y aceptar el riesgo de que un cliente modificado invoque directamente la API.",
+    "Validar en el servicio el actor, el rol, la asignación vigente, la versión y la transición antes de cambiar una incidencia, y conservar una prueba negativa reproducible para el rechazo.",
+    "Permitir las acciones y revisar manualmente los registros después de cada operación, trasladando la detección del abuso a una revisión posterior."
+  ],
+  "tradeoff": "La validación en el servicio reduce el impacto de clientes manipulados y produce un resultado comprobable, pero exige que la API mantenga reglas de autorización, que la interfaz procese errores 403 y que el equipo mantenga pruebas negativas. El riesgo residual incluye credenciales válidas comprometidas y decisiones de conflicto que requieren controles de semanas posteriores.",
+  "requirementIds": ["AC-01", "AC-02", "AC-03", "AC-04"],
+  "verification": [
+    {
+      "command": "npm test -- --ci --runInBand course-tests/smoke.test.tsx course-tests/public/week-03.test.ts",
+      "result": "PASS — 2 suites passed, 3 tests passed.",
+      "evidence": "La prueba pública verificó el workflow con permissions contents: read, setup de Node 22 y ausencia de bypass; también verificó que docs/threat-model.md contiene activo, amenaza, control y verificación."
+    },
+    {
+      "command": "npm run audit:ci",
+      "result": "PASS (exit 0) — el umbral critical no bloqueó las 2 advertencias high transitivas.",
+      "evidence": "La salida visible registró @xmldom/xmldom y js-yaml como vulnerabilidades high y sugirió npm audit fix; el reporte conserva la advertencia sin presentarla como una auditoría limpia."
+    }
+  ]
+}

@@ -1,4 +1,8 @@
+ifeq ($(OS),Windows_NT)
+PYTHON ?= py -3
+else
 PYTHON ?= python3
+endif
 NPM ?= npm
 
 .PHONY: setup verify feedback run run-backend package
