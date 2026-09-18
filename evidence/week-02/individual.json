@@ -1,0 +1,40 @@
+{
+  "schemaVersion": 1,
+  "week": 2,
+  "teamId": "E01",
+  "members": [
+    {
+      "studentId": "3523110229",
+      "commitShas": ["83b430922f0629f89fd428a82284857ebbfc951a"],
+      "files": ["docs/adr/ADR-001-architecture.md", "docs/architecture.mmd"],
+      "tests": [],
+      "reviews": ["Reviso que el diagrama docs/architecture.mmd representara los cuatro limites (UI, application, domain, infrastructure) sin flechas de UI hacia infrastructure, y que el ADR-001 comparara al menos dos alternativas antes de fijar la arquitectura por capas con puertos y adaptadores."],
+      "prediction": "Esperaba dejar establecidos los limites arquitectonicos y la justificacion de la decision antes de que el equipo empezara a programar, para que el esqueleto ejecutable de David y la auditoria posterior tuvieran una referencia clara contra la cual comparar el codigo real.",
+      "command": "git show --stat 83b430922f0629f89fd428a82284857ebbfc951a",
+      "observedResult": "El commit agrego docs/adr/ADR-001-architecture.md y docs/architecture.mmd, ademas de los archivos de configuracion del hito (workflow de feedback, rubrica y guia de la actividad).",
+      "explanation": "Este trabajo establecio la base de diseno (ADR y diagrama) que definio las reglas de dependencia UI -> application -> domain <- infrastructure, sobre la cual se construyo el esqueleto (Integrante 2) y se audito la implementacion real (Integrante 3), incluyendo la contradiccion encontrada y corregida en BackendHealthPort."
+    },
+    {
+      "studentId": "3522110617",
+      "commitShas": ["62fde6e129d640df5ee4c69b4e4edff01eccdbd0"],
+      "files": ["src/domain/incidents.ts", "src/domain/ports/IncidentRepository.ts", "src/application/IncidentApplication.ts", "src/infrastructure/InMemoryIncidentRepository.ts", "src/ui/IncidentApp.tsx", "src/bootstrap/CampusOpsRoot.tsx"],
+      "tests": ["src/domain/incidents.test.ts", "src/application/IncidentApplication.test.ts"],
+      "reviews": [],
+      "prediction": "Esperaba que, al implementar el dominio de incidencias y sus puertos primero, la UI pudiera consumir los casos de uso de application sin depender directamente de los adaptadores en memoria de infrastructure, dejando lista la sustitucion de dependencias para pruebas.",
+      "command": "npm test -- --ci --runInBand src/domain/incidents.test.ts src/application/IncidentApplication.test.ts",
+      "observedResult": "Las pruebas de dominio y de aplicacion pasan, confirmando que las reglas de incidencias y los casos de uso de listar/obtener detalle funcionan de forma aislada usando el repositorio en memoria como sustituto.",
+      "explanation": "Se construyo el esqueleto ejecutable (dominio, puertos, adaptadores en memoria, vista de lista/detalle) siguiendo el ADR-001 de Marco. Este trabajo dejo tambien el CourseBackendHealthAdapter con el import heredado hacia application que fue detectado como contradiccion arquitectonica y corregido en el commit siguiente por el Integrante 3."
+    },
+    {
+      "studentId": "3523110484",
+      "commitShas": ["41fa580dc8e13877074c64d0bee83390b3c5450a"],
+      "files": ["src/domain/ports/BackendHealthPort.ts", "src/application/CampusOpsApplication.ts", "src/infrastructure/CourseBackendHealthAdapter.ts", "reports/week-02/dependencies.json", "evidence/week-02/engineering.json"],
+      "tests": ["npm test -- --ci --runInBand course-tests/public/week-02.test.ts", "npm run typecheck"],
+      "reviews": [],
+      "prediction": "Esperaba encontrar al menos una contradiccion entre docs/architecture.mmd y el codigo real al revisar los imports de cada capa, dado que el propio ADR-001 senalaba el chequeo de salud del backend como una dependencia heredada pendiente de corregir.",
+      "command": "git show HEAD~1:src/infrastructure/CourseBackendHealthAdapter.ts | Select-String -Pattern \"from '../application\"",
+      "observedResult": "El comando confirmo que CourseBackendHealthAdapter.ts (infrastructure) importaba BackendHealthPort desde application/CampusOpsApplication.ts, violando la direccion de dependencia INFRA --> DOMAIN definida en el diagrama. Tras mover el contrato a domain/ports/BackendHealthPort.ts, el mismo comando ya no arroja coincidencias.",
+      "explanation": "Se identifico y corrigio la unica contradiccion arquitectonica real del proyecto: un puerto (BackendHealthPort) declarado en application en vez de domain, lo que hacia que infrastructure dependiera de application. La correccion respeta ADR-001 sin alterar el comportamiento observable (npm run typecheck y la prueba publica de arquitectura siguen pasando), y quedo documentada con evidencia antes/despues en reports/week-02/dependencies.json."
+    }
+  ]
+}

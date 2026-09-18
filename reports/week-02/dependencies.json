@@ -1,0 +1,36 @@
+{
+  "schemaVersion": 1,
+  "week": 2,
+  "commitSha": "7a5c3678a863bd7846fdbce4a07303141dce0e5a",
+  "generatedAt": "2026-09-13T19:54:14-06:00",
+  "checks": [
+    {
+      "id": "backend-health-port-location-before",
+      "status": "fail",
+      "scenarioType": "failure",
+      "command": "git show HEAD~1:src/infrastructure/CourseBackendHealthAdapter.ts | Select-String -Pattern \"from '../application\"",
+      "evidence": "El commit anterior mostraba que src/infrastructure/CourseBackendHealthAdapter.ts importaba BackendHealthPort desde '../application/CampusOpsApplication', es decir, infraestructura dependiendo de application en vez de domain. Esto contradice el diagrama docs/architecture.mmd, que define INFRA --> DOMAIN, y rompe la regla de dependencias limpias UI -> application -> domain <- infrastructure."
+    },
+    {
+      "id": "backend-health-port-location-after",
+      "status": "pass",
+      "scenarioType": "nominal",
+      "command": "Select-String -Path src/infrastructure/CourseBackendHealthAdapter.ts -Pattern \"from '../application\"",
+      "evidence": "El comando no devuelve ningun resultado tras la correccion: BackendHealthPort ahora vive en src/domain/ports/BackendHealthPort.ts, y tanto CampusOpsApplication.ts como CourseBackendHealthAdapter.ts lo importan desde domain/ports, restableciendo la direccion de dependencia INFRA --> DOMAIN del diagrama."
+    },
+    {
+      "id": "architecture-boundary-test",
+      "status": "pass",
+      "scenarioType": "boundary",
+      "command": "npm test -- --ci --runInBand course-tests/public/week-02.test.ts",
+      "evidence": "La prueba 'architecture exposes boundaries and no direct UI-to-infrastructure edge' pasa (1 passed, 1 total), confirmando que la capa UI (src/ui/IncidentApp.tsx) no importa directamente ningun modulo de infrastructure."
+    },
+    {
+      "id": "typecheck-after-fix",
+      "status": "pass",
+      "scenarioType": "nominal",
+      "command": "npm run typecheck",
+      "evidence": "tsc --noEmit termina sin errores tras mover BackendHealthPort a domain/ports, confirmando que la correccion no rompe el tipado del proyecto."
+    }
+  ]
+}
