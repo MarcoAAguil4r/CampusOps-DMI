@@ -44,23 +44,24 @@
     {
       "studentId": "3523110484",
       "commitShas": [
-        "<PENDIENTE_MANUAL: SHA completo de 40 caracteres del commit real>"
+        "e43f635d7c3f59e740b8663bb5a669f7ad3a4481"
       ],
       "files": [
-        "course-tests/team/week-03-authorization.test.ts"
+        "reports/week-03/security.json",
+        "evidence/week-03/individual.json"
       ],
       "tests": [
-        "P1-403 rejects an unassigned technician action",
-        "P1-sin-efectos preserves the incident after a forbidden action",
-        "P1-lectura rejects a reporter who cannot view the incident",
-        "control-positivo allows the assigned technician to start the incident",
-        "P2-reasignación rejects a displaced technician and a stale coordinator update"
+        "npm run audit:ci",
+        "make verify-week-03",
+        "make public-test-week-03"
       ],
-      "reviews": [],
-      "prediction": "Esperaba que la mutación de visible() debilitara el control de autorización y permitiera a actores no asignados leer o modificar incidentes, mientras que la protección por versión seguiría funcionando.",
-      "command": "npm test -- --ci --runInBand course-tests/team/week-03-authorization.test.ts",
-      "observedResult": "Con el backend original: 1 suite passed, 5 tests passed, 0 snapshots y tiempo aproximado de 9.503 s. Con la mutación temporal: 1 suite failed, 4 tests failed y 1 passed, en aproximadamente 6.787 s; P1-403 y P1-sin-efectos recibieron 201 en vez de 403, P1-lectura recibió 200 en vez de 403 y P2-reasignación recibió 409 en vez de 403, mientras control-positivo pasó. Tras restaurar course-backend/campusops.mjs con git checkout -- course-backend/campusops.mjs: 1 suite passed, 5 tests passed, 0 snapshots y tiempo aproximado de 6.978 s. El estado final mostró ?? course-tests/team/.",
-      "explanation": "La mutación de visible() permitió lecturas y acciones de actores no autorizados, por lo que las comprobaciones P1 detectaron respuestas 201 o 200 donde exigían 403 y la comprobación sin efectos dejó de poder confirmar el rechazo. En P2, después de la reasignación la acción del técnico desplazado llegó al control de versión y recibió 409 version_conflict porque usó baseVersion 1 frente a la versión incrementada"
+      "reviews": [
+        "Revisé docs/threat-model.md y .github/workflows/week-03-ci-amenazas-feedback.yml. Confirmé que el workflow tiene 'permissions: contents: read' y que la amenaza P1 está vinculada a la verificación 403."
+      ],
+      "prediction": "Esperaba que npm run audit:ci informara el estado real de las dependencias. El resultado de bloqueo o no bloqueo debe confirmarse mediante la salida ejecutada.",
+      "command": "npm run audit:ci",
+      "observedResult": "PASS (exit code 0). Se detectaron 2 vulnerabilidades de severidad 'high' (@xmldom/xmldom y js-yaml). El comando no falló porque el umbral configurado es 'critical', documentando el riesgo residual sin bloquear el CI.",
+      "explanation": "Consolidé la evidencia de seguridad utilizando resultados verificables de la auditoría, las verificaciones del curso y la prueba de autorización del equipo, sin inventar resultados ni conclusiones."
     }
     
   ]

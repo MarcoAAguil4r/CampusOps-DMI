@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "week": 3,
-  "commitSha": "83b430922f0629f89fd428a82284857ebbfc951a",
+  "commitSha": "e43f635d7c3f59e740b8663bb5a669f7ad3a4481",
   "generatedAt": "2026-09-18T04:14:08.7317731Z",
   "checks": [
     {
@@ -38,6 +38,13 @@
       "scenarioType": "boundary",
       "command": "npm test -- --ci --runInBand course-tests/public/week-03.test.ts",
       "evidence": "La prueba confirmó permisos mínimos y comprobaciones obligatorias del workflow, además de activos, amenazas, controles y verificación en docs/threat-model.md."
+    },
+    {
+      "id": "team-authorization-test",
+      "status": "pass",
+      "scenarioType": "boundary",
+      "command": "npm test -- --ci --runInBand course-tests/team/week-03-authorization.test.ts",
+      "evidence": "La evidencia individual de 3522110617 registra 5 pruebas exitosas con el backend original y nuevamente tras restaurar la mutación temporal; con la mutación se observaron 4 fallos y 1 caso exitoso."
     }
   ]
 }
