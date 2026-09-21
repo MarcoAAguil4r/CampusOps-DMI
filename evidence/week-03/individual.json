@@ -1,0 +1,67 @@
+{
+  "schemaVersion": 1,
+  "week": 3,
+  "teamId": "E01",
+  "members": [
+    {
+      "studentId": "3523110229",
+      "commitShas": [
+        "<PENDIENTE_MANUAL: SHA completo de 40 caracteres del commit real>"
+      ],
+      "files": [
+        "course-backend/campusops.mjs"
+      ],
+      "tests": [],
+      "reviews": [],
+      "prediction": "Esperaba que la mutación de visible() debilitara el control de autorización y permitiera a actores no asignados leer o modificar incidentes, mientras que la protección por versión seguiría funcionando.",
+      "command": "git checkout -- course-backend/campusops.mjs",
+      "observedResult": "Se restauró el archivo campusops.mjs a su estado original, eliminando la mutación de visible() y devolviendo el control de autorización a su comportamiento correcto.",
+      "explanation": "La mutación temporal de visible() fue revertida para asegurar que las pruebas reflejen el comportamiento esperado del sistema, manteniendo la integridad del control de acceso y la protección por versión."
+    },
+    {
+      "studentId": "3522110617",
+      "commitShas": [
+        "150bd8e6aed68d331d3374520c4a6ac3c586a03e"
+      ],
+      "files": [
+        "course-tests/team/week-03-authorization.test.ts"
+      ],
+      "tests": [
+        "P1-403 rejects an unassigned technician action",
+        "P1-sin-efectos preserves the incident after a forbidden action",
+        "P1-lectura rejects a reporter who cannot view the incident",
+        "control-positivo allows the assigned technician to start the incident",
+        "P2-reasignación rejects a displaced technician and a stale coordinator update"
+      ],
+      "reviews": [
+        "Revisé docs/CAMPUSOPS.md, docs/CAMPUSOPS_API.md y docs/threat-model.md. Confirman que la autorización se valida en el servicio según actor, rol y asignación vigente, y que una reasignación con versión base obsoleta debe responder 409 sin imponer el cambio antiguo."
+      ],
+      "prediction": "Con la mutación de visible() aplicada, esperaba que la prueba detectara el debilitamiento del control: P1-403 y P1-sin-efectos dejarían de recibir 403 al permitir la acción, P1-lectura dejaría de recibir 403 al permitir la lectura y P2-reasignación ya no rechazaría al técnico desplazado por autorización; el control-positivo seguiría pasando.",
+      "command": "npm test -- --ci --runInBand course-tests/team/week-03-authorization.test.ts",
+      "observedResult": "Con el backend original: 1 suite passed, 5 tests passed, 0 snapshots y tiempo aproximado de 9.503 s. Con la mutación temporal: 1 suite failed, 4 tests failed y 1 passed, en aproximadamente 6.787 s; P1-403 y P1-sin-efectos recibieron 201 en vez de 403, P1-lectura recibió 200 en vez de 403 y P2-reasignación recibió 409 en vez de 403, mientras control-positivo pasó. Tras restaurar course-backend/campusops.mjs con git checkout -- course-backend/campusops.mjs: 1 suite passed, 5 tests passed, 0 snapshots y tiempo aproximado de 6.978 s. El estado final mostró ?? course-tests/team/.",
+      "explanation": "La mutación de visible() permitió lecturas y acciones de actores no autorizados, por lo que las comprobaciones P1 detectaron respuestas 201 o 200 donde exigían 403 y la comprobación sin efectos dejó de poder confirmar el rechazo. En P2, después de la reasignación la acción del técnico desplazado llegó al control de versión y recibió 409 version_conflict porque usó baseVersion 1 frente a la versión incrementada. La restauración devolvió los cinco casos a PASS, mostrando que la prueba detecta el debilitamiento del control de autorización y conserva la protección de concurrencia por versión."
+    },
+    {
+      "studentId": "3523110484",
+      "commitShas": [
+        "<PENDIENTE_MANUAL: SHA completo de 40 caracteres del commit real>"
+      ],
+      "files": [
+        "course-tests/team/week-03-authorization.test.ts"
+      ],
+      "tests": [
+        "P1-403 rejects an unassigned technician action",
+        "P1-sin-efectos preserves the incident after a forbidden action",
+        "P1-lectura rejects a reporter who cannot view the incident",
+        "control-positivo allows the assigned technician to start the incident",
+        "P2-reasignación rejects a displaced technician and a stale coordinator update"
+      ],
+      "reviews": [],
+      "prediction": "Esperaba que la mutación de visible() debilitara el control de autorización y permitiera a actores no asignados leer o modificar incidentes, mientras que la protección por versión seguiría funcionando.",
+      "command": "npm test -- --ci --runInBand course-tests/team/week-03-authorization.test.ts",
+      "observedResult": "Con el backend original: 1 suite passed, 5 tests passed, 0 snapshots y tiempo aproximado de 9.503 s. Con la mutación temporal: 1 suite failed, 4 tests failed y 1 passed, en aproximadamente 6.787 s; P1-403 y P1-sin-efectos recibieron 201 en vez de 403, P1-lectura recibió 200 en vez de 403 y P2-reasignación recibió 409 en vez de 403, mientras control-positivo pasó. Tras restaurar course-backend/campusops.mjs con git checkout -- course-backend/campusops.mjs: 1 suite passed, 5 tests passed, 0 snapshots y tiempo aproximado de 6.978 s. El estado final mostró ?? course-tests/team/.",
+      "explanation": "La mutación de visible() permitió lecturas y acciones de actores no autorizados, por lo que las comprobaciones P1 detectaron respuestas 201 o 200 donde exigían 403 y la comprobación sin efectos dejó de poder confirmar el rechazo. En P2, después de la reasignación la acción del técnico desplazado llegó al control de versión y recibió 409 version_conflict porque usó baseVersion 1 frente a la versión incrementada"
+    }
+    
+  ]
+}
