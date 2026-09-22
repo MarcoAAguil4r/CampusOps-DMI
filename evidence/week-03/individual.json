@@ -6,17 +6,23 @@
     {
       "studentId": "3523110229",
       "commitShas": [
-        "<PENDIENTE_MANUAL: SHA completo de 40 caracteres del commit real>"
+        "6614588fafe371f7573a53c8ccdcf008f8134751"
       ],
       "files": [
-        "course-backend/campusops.mjs"
+        ".github/workflows/week-03-ci-amenazas-feedback.yml",
+        "docs/threat-model.md",
+        "tools/course_public_evaluator.py"
       ],
-      "tests": [],
-      "reviews": [],
-      "prediction": "Esperaba que la mutación de visible() debilitara el control de autorización y permitiera a actores no asignados leer o modificar incidentes, mientras que la protección por versión seguiría funcionando.",
-      "command": "git checkout -- course-backend/campusops.mjs",
-      "observedResult": "Se restauró el archivo campusops.mjs a su estado original, eliminando la mutación de visible() y devolviendo el control de autorización a su comportamiento correcto.",
-      "explanation": "La mutación temporal de visible() fue revertida para asegurar que las pruebas reflejen el comportamiento esperado del sistema, manteniendo la integridad del control de acceso y la protección por versión."
+      "tests": [
+        "npm test -- --ci --runInBand course-tests/public/week-03.test.ts"
+      ],
+      "reviews": [
+        "Revisé que el workflow mantuviera permissions: contents: read, ejecutara los checks obligatorios y conservara los artefactos de reports/week-03 y evidence/week-03."
+      ],
+      "prediction": "Esperaba que el workflow y el modelo de amenazas quedaran conectados con comprobaciones ejecutables, manteniendo el control P1 de autorización en el servicio y evitando bypasses en CI.",
+      "command": "git show --stat 6614588fafe371f7573a53c8ccdcf008f8134751",
+      "observedResult": "El commit contiene el workflow de semana 3, el modelo de amenazas, el evaluador público y los reportes iniciales; la prueba pública confirmó los permisos mínimos y los enlaces del modelo.",
+      "explanation": "La aportación integra la automatización de CI y el modelo de amenazas con una verificación pública reproducible, dejando explícitos los controles, las pruebas y los artefactos que debe conservar el workflow."
     },
     {
       "studentId": "3522110617",

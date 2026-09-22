@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "week": 3,
-  "commitSha": "83b430922f0629f89fd428a82284857ebbfc951a",
+  "commitSha": "0907d1424079b720313c7c008da8b9f4daa5c8c2",
   "decision": "Atender primero la amenaza de autorización de incidencias ajenas mediante controles en el servicio y pruebas negativas, porque una interfaz que solo oculta botones no impide que un cliente manipulado consulte o altere recursos. El modelo vincula esta decisión con el actor, el rol, la asignación vigente, la transición de estado y una respuesta 403 sin mutación.",
   "alternatives": [
     "Confiar principalmente en la interfaz móvil para ocultar acciones según el perfil y aceptar el riesgo de que un cliente modificado invoque directamente la API.",

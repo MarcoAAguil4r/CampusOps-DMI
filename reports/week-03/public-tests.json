@@ -1,9 +1,9 @@
 {
   "schemaVersion": 1,
   "week": 3,
-  "mode": "verify",
+  "mode": "public",
   "commitSha": "0907d1424079b720313c7c008da8b9f4daa5c8c2",
-  "evaluatedAt": "2026-09-22T01:25:05.445478+00:00",
+  "evaluatedAt": "2026-09-22T01:25:38.586248+00:00",
   "status": "pass",
   "checks": [
     {
@@ -32,6 +32,26 @@
       "detail": "hits=[]"
     },
     {
+      "id": "required_evidence",
+      "status": "pass",
+      "detail": "missing/empty=[]"
+    },
+    {
+      "id": "schema:reports/week-03/security.json",
+      "status": "pass",
+      "detail": "6 checks indexed, 3 boundary/failure; report evaluates HEAD"
+    },
+    {
+      "id": "schema:evidence/week-03/engineering.json",
+      "status": "pass",
+      "detail": "decision evidence is substantive and reproducible; report evaluates HEAD"
+    },
+    {
+      "id": "schema:evidence/week-03/individual.json",
+      "status": "pass",
+      "detail": "three individual evidence records found"
+    },
+    {
       "id": "toolchain_1",
       "status": "pass",
       "detail": "npm run typecheck\n> dmi-react-native-starter@1.0.0 typecheck\n> tsc --noEmit"
@@ -49,7 +69,7 @@
     {
       "id": "toolchain_4",
       "status": "pass",
-      "detail": "npm run test:smoke\n> dmi-react-native-starter@1.0.0 test:smoke\n> jest --no-watchman --cacheDirectory .jest-cache --ci --runInBand course-tests/smoke.test.tsx\n\n  console.error\n    The current testing environment is not configured to support act(...)\n\n    \u001b[0m \u001b[90m 57 |\u001b[39m           key\u001b[33m=\u001b[39m{incident\u001b[33m.\u001b[39mid}\n     \u001b[90m 58 |\u001b[39m           onPress\u001b[33m=\u001b[39m{() \u001b[33m=>\u001b[39m {\n    \u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 59 |\u001b[39m             incidents\u001b[33m.\u001b[39mgetIncidentDetail(incident\u001b[33m.\u001b[39mid)\u001b[33m.\u001b[39mthen((detail) \u001b[33m=>\u001b[39m setSelectedIncident(detail))\u001b[33m;\u001b[39m\n     \u001b[90m    |\u001b[39m                                                                       \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n     \u001b[90m 60 |\u001b[39m           }}\n     \u001b[90m 61 |\u001b[39m           style\u001b[33m=\u001b[39m{styles\u001b[33m.\u001b[39mincident}\n     \u001b[90m 62 |\u001b[39m           testID\u001b[33m=\u001b[39m{\u001b[32m`incident-${incident.id}`\u001b[39m}\u001b[0m\n\n      at isConcurrentActEnvironment (node_modules/react-reconciler/cjs/react-reconciler.development.js:13990:17)\n      at warnIfUpdatesNotWrappedWithActDEV (node_modules/react-reconciler/cjs/react-reconciler.development.js:16304:7)\n      at scheduleUpdateOnFiber (node_modules/react-reconciler/cjs/react-reconciler.development.js:14070:11)\n      at dispatchSetStateInternal (node_modules/react-reconciler/cjs/react-reconciler.development.js:6784:13)\n      at dispatchSetState (node_modules/react-reconciler/cjs/react-reconciler.development.js:6741:7)\n      at setSelectedIncident (src/ui/IncidentApp.tsx:59:71)\n\n\nPASS course-tests/smoke.test.tsx\n  âˆš renders the reproducible baseline and resolves backend state (151 ms)\n  âˆš shows a fictitious incident list and its selected detail (58 ms)\n\nTest Suites: 1 passed, 1 total\nTests:       2 passed, 2 total\nSnapshots:   0 total\nTime:        1.972 s, estimated 2 s\nRan all test suites matching /course-tests\\\\smoke.test.tsx/i."
+      "detail": "npm test -- --ci --runInBand course-tests/public/week-03.test.ts\n> dmi-react-native-starter@1.0.0 test\n> jest --no-watchman --cacheDirectory .jest-cache --ci --runInBand course-tests/public/week-03.test.ts\n\n\nPASS course-tests/public/week-03.test.ts\n  âˆš feedback workflow preserves critical checks and least privilege (4 ms)\n  âˆš threat model links assets, threats, controls and verification (1 ms)\n\nTest Suites: 1 passed, 1 total\nTests:       2 passed, 2 total\nSnapshots:   0 total\nTime:        1.417 s\nRan all test suites matching /course-tests\\\\public\\\\week-03.test.ts/i."
     }
   ]
 }
