@@ -5,6 +5,7 @@ export type BackendHealth = Readonly<{
 }>;
 
 const DEFAULT_URL = 'http://127.0.0.1:4310';
+const DEMO_API_KEY = process.env.EXPO_PUBLIC_DEMO_API_KEY ?? '';
 
 export async function getBackendHealth(
   baseUrl = process.env.EXPO_PUBLIC_COURSE_BACKEND_URL ?? DEFAULT_URL,

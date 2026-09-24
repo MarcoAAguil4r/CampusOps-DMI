@@ -22,7 +22,10 @@ export function IncidentApp({ campusOps, incidents }: IncidentAppProps) {
     campusOps.checkBackendHealth()
       .then(() => active && setBackendStatus('available'))
       .catch(() => active && setBackendStatus('offline'));
-    incidents.listIncidents().then((result) => active && setItems(result));
+    incidents.listIncidents().then((result) => {
+      console.log('Incidencias cargadas:', { count: result.length });
+      active && setItems(result);
+    });
     return () => {
       active = false;
     };
