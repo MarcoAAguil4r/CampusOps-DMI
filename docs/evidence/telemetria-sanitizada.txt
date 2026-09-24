@@ -1,0 +1,14 @@
+Evidencia: sanitizacion de telemetria
+Fecha: 2026-09-24
+Rama: week4/security-audit-marco
+
+Comando:
+npm test -- --ci --runInBand course-tests/public/week-04.test.ts
+
+Salida:
+PASS  course-tests/public/week-04.test.ts
+Test Suites: 1 passed, 1 total
+Tests:       1 passed, 1 total
+
+Interpretacion:
+La prueba confirma que redactForTelemetry reemplaza campos sensibles anidados y conserva el contexto tecnico permitido.

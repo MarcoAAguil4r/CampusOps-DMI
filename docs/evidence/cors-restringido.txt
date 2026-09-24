@@ -1,0 +1,14 @@
+Evidencia: CORS restringido
+Fecha: 2026-09-24
+Rama: week4/security-audit-marco
+
+Configuracion usada:
+COURSE_BACKEND_PORT=4321
+COURSE_BACKEND_CORS_ORIGIN=http://localhost:3000
+
+Comprobacion contra GET /health con Origin: http://localhost:3000:
+status=200
+access-control-allow-origin=http://localhost:3000
+
+Interpretacion:
+El backend devuelve el origen configurado y no el comodin '*'.

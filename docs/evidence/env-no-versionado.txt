@@ -1,0 +1,18 @@
+Evidencia: archivo .env no versionado
+Fecha: 2026-09-24
+Rama: week4/security-audit-marco
+
+Comandos:
+git status --short --branch
+git ls-files --error-unmatch .env
+
+Salida relevante:
+## week4/security-audit-marco
+ M .env.example
+ M course-backend/server.mjs
+ M src/course-evaluation/index.ts
+?? docs/security-audit.md
+.env no esta versionado
+
+Interpretacion:
+No existe un archivo .env agregado al repositorio. .env.example contiene solo configuracion local sin credenciales.
