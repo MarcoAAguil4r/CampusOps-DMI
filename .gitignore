@@ -6,6 +6,10 @@ coverage/
 .jest-cache/
 dist/
 .env
+.env.local
+.env.development
+.env*.local
+!.env.example
 *.jks
 *.keystore
 *.p8
