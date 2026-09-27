@@ -1,0 +1,31 @@
+{
+  "schemaVersion": 1,
+  "week": 4,
+  "teamId": "E01",
+  "members": [
+    {
+      "studentId": "3523110229",
+      "commitShas": [
+        "a66c83ed494f388308e6a3666687f7899c49328f"
+      ],
+      "files": [
+        "src/domain/ports/SessionPort.ts",
+        "src/infrastructure/SecureSessionAdapter.ts",
+        "src/infrastructure/SecureSessionAdapter.test.ts",
+        "src/infrastructure/InMemorySessionAdapter.ts",
+        "src/infrastructure/InMemorySessionAdapter.test.ts",
+        "docs/security-controls.md"
+      ],
+      "tests": [
+        "npm test -- --ci --runInBand --runTestsByPath course-tests/public/week-04.test.ts src/infrastructure/SecureSessionAdapter.test.ts src/infrastructure/InMemorySessionAdapter.test.ts"
+      ],
+      "reviews": [
+        "Revision asistida por GitHub Copilot: se comprobo que SecureSessionAdapter solo persiste userId y role, rechaza roles fuera del contrato y elimina contenido corrupto; el login de la app aun no esta implementado."
+      ],
+      "prediction": "La prediccion tecnica fue que SecureStore guardaria solo userId y role, y que una sesion corrupta o con rol desconocido se borraria y devolveria null; ambos adaptadores compartirian el ciclo guardar, leer y borrar.",
+      "command": "npm test -- --ci --runInBand --runTestsByPath course-tests/public/week-04.test.ts src/infrastructure/SecureSessionAdapter.test.ts src/infrastructure/InMemorySessionAdapter.test.ts",
+      "observedResult": "PASS: 3 suites y 7 tests. make verify tambien paso typecheck, lint y smoke; el escaneo de secretos devolvio hits=[].",
+      "explanation": "Con asistencia sustantiva de GitHub Copilot se implemento el almacenamiento seguro de la sesion minima, el contrato comun para SecureStore y memoria, y pruebas de validacion, limpieza y cierre. No se almacenan tokens ni se afirma que exista un flujo de login; los cambios y la evidencia deben revisarse y poder explicarse antes de la entrega final."
+    }
+  ]
+}
