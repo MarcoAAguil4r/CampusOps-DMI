@@ -7,4 +7,6 @@ export type UserSession = Readonly<{
 
 export interface SessionPort {
   getCurrentSession(): Promise<UserSession | null>;
+  saveCurrentSession(session: UserSession): Promise<void>;
+  clearCurrentSession(): Promise<void>;
 }

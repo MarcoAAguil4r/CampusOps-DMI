@@ -25,6 +25,7 @@
   },
   "dependencies": {
     "expo": "~57.0.9",
+    "expo-secure-store": "~57.0.4",
     "expo-status-bar": "~57.0.1",
     "react": "19.2.3",
     "react-native": "0.86.2"
@@ -46,7 +47,8 @@
     "preset": "jest-expo",
     "testPathIgnorePatterns": [
       "/node_modules/",
-      "/course-tests/hidden/"
+      "/course-tests/hidden/",
+      "/semana4/"
     ],
     "coverageDirectory": "coverage",
     "collectCoverageFrom": [
