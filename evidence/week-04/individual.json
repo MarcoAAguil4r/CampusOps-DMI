@@ -26,6 +26,27 @@
       "command": "npm test -- --ci --runInBand --runTestsByPath course-tests/public/week-04.test.ts src/infrastructure/SecureSessionAdapter.test.ts src/infrastructure/InMemorySessionAdapter.test.ts",
       "observedResult": "PASS: 3 suites y 7 tests. make verify tambien paso typecheck, lint y smoke; el escaneo de secretos devolvio hits=[].",
       "explanation": "Con asistencia sustantiva de GitHub Copilot se implemento el almacenamiento seguro de la sesion minima, el contrato comun para SecureStore y memoria, y pruebas de validacion, limpieza y cierre. No se almacenan tokens ni se afirma que exista un flujo de login; los cambios y la evidencia deben revisarse y poder explicarse antes de la entrega final."
+    },
+    {
+      "studentId": "3522110617",
+      "commitShas": [
+        "ef65194ac752f4572f3bedc200a8eb94156cfc9f"
+      ],
+      "files": [
+        "src/application/IncidentApplication.ts",
+        "src/course-evaluation/index.ts",
+        "src/course-evaluation/telemetry.test.ts",
+        "src/domain/TelemetryPort.ts",
+        "src/infrastructure/ConsoleTelemetryAdapter.ts"
+      ],
+      "tests": [
+        "npm.cmd test -- --ci --runInBand --runTestsByPath course-tests/public/week-04.test.ts src/course-evaluation/telemetry.test.ts src/application/IncidentApplication.test.ts"
+      ],
+      "reviews": [],
+      "prediction": "Esperaba que redactForTelemetry eliminara de forma recursiva los datos personales y sensibles, incluso en objetos anidados y arrays, sin mutar el evento original y conservando el contexto tecnico seguro; los eventos de IncidentApplication debian llegar ya sanitizados al adaptador de consola.",
+      "command": "npm.cmd test -- --ci --runInBand --runTestsByPath course-tests/public/week-04.test.ts src/course-evaluation/telemetry.test.ts src/application/IncidentApplication.test.ts",
+      "observedResult": "PASS: 3 suites, 7 tests ejecutados y 7 aprobados; 0 snapshots. Pasaron course-tests/public/week-04.test.ts, src/course-evaluation/telemetry.test.ts y src/application/IncidentApplication.test.ts.",
+      "explanation": "Se conecto redactForTelemetry con un puerto de telemetria y un adaptador de consola para garantizar que los eventos sean sanitizados antes de llegar al logging real, manteniendo separado el contrato de telemetria de la infraestructura. La sanitizacion cubre claves sensibles con variantes de mayusculas, guion bajo y guion, objetos y arrays anidados, valores especiales y reemplazo por [REDACTED], sin perder el contexto tecnico seguro ni mutar el objeto de entrada."
     }
   ]
 }

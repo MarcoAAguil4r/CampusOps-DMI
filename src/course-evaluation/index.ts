@@ -35,9 +35,14 @@ export function redactForTelemetry(_input: unknown): unknown {
     'assignmenthistory',
   ]);
 
+  function isPlainObject(value: object): value is Record<string, unknown> {
+    const prototype = Object.getPrototypeOf(value);
+    return prototype === Object.prototype || prototype === null;
+  }
+
   function redact(value: unknown): unknown {
     if (Array.isArray(value)) return value.map(redact);
-    if (typeof value !== 'object' || value === null) return value;
+    if (typeof value !== 'object' || value === null || !isPlainObject(value)) return value;
 
     return Object.fromEntries(
       Object.entries(value).map(([key, nestedValue]) => {
