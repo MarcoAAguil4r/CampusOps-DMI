@@ -1,0 +1,43 @@
+{
+  "schemaVersion": 1,
+  "week": 4,
+  "commitSha": "bbc599db9af87de3e9387d8db9a541e2ed334a12",
+  "generatedAt": "2026-09-28T17:50:00-06:00",
+  "checks": [
+    {
+      "id": "telemetry-empty-list-boundary",
+      "status": "pass",
+      "scenarioType": "boundary",
+      "command": "npm test -- --ci --runInBand --runTestsByPath src/course-evaluation/negative-paths.test.ts",
+      "evidence": "Con una lista de incidencias vacia, IncidentApplication.listIncidents() sigue enviando el evento de telemetria a ConsoleTelemetryAdapter, y redactForTelemetry sigue ocultando token, reporterId y location como [REDACTED], conservando incidentId='none', status y durationMs. Confirma que el caso limite (sin incidencias) no omite la sanitizacion."
+    },
+    {
+      "id": "telemetry-repository-failure",
+      "status": "pass",
+      "scenarioType": "failure",
+      "command": "npm test -- --ci --runInBand --runTestsByPath src/course-evaluation/negative-paths.test.ts",
+      "evidence": "Cuando el repositorio de incidencias lanza un error (backend no disponible), el error se propaga tal cual hacia quien llama, y ni console.log ni console.error son invocados: la telemetria nunca se ejecuta con datos parciales o corruptos en el camino de error."
+    },
+    {
+      "id": "session-injected-sensitive-field",
+      "status": "pass",
+      "scenarioType": "failure",
+      "command": "npm test -- --ci --runInBand --runTestsByPath src/course-evaluation/negative-paths.test.ts",
+      "evidence": "Se almaceno de forma ficticia una sesion con campos inyectados 'token' y 'password' ademas de userId/role. SecureSessionAdapter.getCurrentSession() devuelve unicamente { userId, role }, sin exponer los campos adicionales, y no se genero ningun console.log ni console.error durante la operacion."
+    },
+    {
+      "id": "session-malformed-json",
+      "status": "pass",
+      "scenarioType": "failure",
+      "command": "npm test -- --ci --runInBand --runTestsByPath src/course-evaluation/negative-paths.test.ts",
+      "evidence": "Con contenido JSON malformado (incluyendo un token ficticio embebido en el texto corrupto) almacenado en SecureStore, getCurrentSession() descarta el valor, borra la entrada y devuelve null, sin registrar el contenido corrupto en consola en ningun momento."
+    },
+    {
+      "id": "full-suite-typecheck",
+      "status": "pass",
+      "scenarioType": "nominal",
+      "command": "npm run typecheck",
+      "evidence": "tsc --noEmit finaliza sin errores tras agregar las pruebas negativas, confirmando que no se rompio el tipado del proyecto."
+    }
+  ]
+}
