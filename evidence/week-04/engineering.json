@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "week": 4,
-  "commitSha": "014ecfb5583e30f55d6c11a9d951c5dede7d5c8f",
+  "commitSha": "3a42589fab6d2ca0104b9785817f1f14d31ce4c9",
   "decision": "El equipo eligio expo-secure-store como mecanismo de almacenamiento seguro para persistir la sesion del usuario (UserSession: userId y role), en previsión de cuando se incorpore el flujo real de autenticacion. En iOS se usa accesibilidad WHEN_UNLOCKED_THIS_DEVICE_ONLY, y en Android el almacenamiento queda respaldado por Android Keystore. SecureSessionAdapter serializa unicamente los campos permitidos, valida el rol al leer y escribir, elimina datos corruptos, y no tiene fallback a AsyncStorage, archivos ni texto plano si el modulo nativo falla.",
   "alternatives": [
     "AsyncStorage o JSON en archivos locales: mas simple de implementar, pero no ofrece almacenamiento cifrado de credenciales por si mismo, por lo que fue descartado para datos de sesion.",
@@ -24,6 +24,11 @@
       "command": "npm run audit:ci",
       "result": "Exito bajo el umbral configurado de vulnerabilidades criticas; se reportan 2 advisories 'high' transitivos en @xmldom/xmldom y js-yaml",
       "evidence": "docs/security-controls.md documenta estas advisories como riesgo de dependencias pendiente de revision separada, no relacionado con el control de sesion implementado esta semana."
+    },
+    {
+      "command": "npm test -- --ci --runInBand --runTestsByPath course-tests/smoke.test.tsx",
+      "result": "PASS: 1 suite, 3 tests.",
+      "evidence": "La prueba de integración monta App desde la composición real de CampusOpsRoot y captura ConsoleTelemetryAdapter; token, reporterId y location se registran solo como [REDACTED]."
     }
   ]
 }

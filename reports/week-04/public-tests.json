@@ -2,8 +2,8 @@
   "schemaVersion": 1,
   "week": 4,
   "mode": "public",
-  "commitSha": "f749b9c8e8cffe0a60e68ebc45c8e36af944847a",
-  "evaluatedAt": "2026-09-29T01:33:10.568808+00:00",
+  "commitSha": "3a42589fab6d2ca0104b9785817f1f14d31ce4c9",
+  "evaluatedAt": "2026-09-29T01:43:14.971175+00:00",
   "status": "pass",
   "checks": [
     {
@@ -39,17 +39,17 @@
     {
       "id": "schema:reports/week-04/secret-scan.json",
       "status": "pass",
-      "detail": "1 checks indexed, 1 boundary/failure; evidence-only commit; invalid changes=[]"
+      "detail": "1 checks indexed, 1 boundary/failure; report evaluates HEAD"
     },
     {
       "id": "schema:reports/week-04/negative-tests.json",
       "status": "pass",
-      "detail": "6 checks indexed, 5 boundary/failure; evidence-only commit; invalid changes=[]"
+      "detail": "7 checks indexed, 6 boundary/failure; report evaluates HEAD"
     },
     {
       "id": "schema:evidence/week-04/engineering.json",
       "status": "pass",
-      "detail": "decision evidence is substantive and reproducible; evidence-only commit; invalid changes=[]"
+      "detail": "decision evidence is substantive and reproducible; report evaluates HEAD"
     },
     {
       "id": "schema:evidence/week-04/individual.json",
@@ -74,7 +74,7 @@
     {
       "id": "toolchain_4",
       "status": "pass",
-      "detail": "npm test -- --ci --runInBand course-tests/public/week-04.test.ts\n> dmi-react-native-starter@1.0.0 test\n> jest --no-watchman --cacheDirectory .jest-cache --ci --runInBand course-tests/public/week-04.test.ts\n\n\nPASS course-tests/public/week-04.test.ts\n  âˆš CampusOps redacts personal and incident-sensitive data while preserving technical context (4 ms)\n  âˆš redacts nested list values with normalized keys without mutating the input\n\nTest Suites: 1 passed, 1 total\nTests:       2 passed, 2 total\nSnapshots:   0 total\nTime:        1.557 s, estimated 2 s\nRan all test suites matching /course-tests\\\\public\\\\week-04.test.ts/i."
+      "detail": "npm test -- --ci --runInBand course-tests/public/week-04.test.ts\n> dmi-react-native-starter@1.0.0 test\n> jest --no-watchman --cacheDirectory .jest-cache --ci --runInBand course-tests/public/week-04.test.ts\n\n\nPASS course-tests/public/week-04.test.ts\n  âˆš CampusOps redacts personal and incident-sensitive data while preserving technical context (4 ms)\n  âˆš redacts nested list values with normalized keys without mutating the input (1 ms)\n\nTest Suites: 1 passed, 1 total\nTests:       2 passed, 2 total\nSnapshots:   0 total\nTime:        1.739 s\nRan all test suites matching /course-tests\\\\public\\\\week-04.test.ts/i."
     }
   ]
 }

@@ -1,8 +1,8 @@
 {
   "schemaVersion": 1,
   "week": 4,
-  "commitSha": "014ecfb5583e30f55d6c11a9d951c5dede7d5c8f",
-  "generatedAt": "2026-09-28T19:21:55.8882333-06:00",
+  "commitSha": "3a42589fab6d2ca0104b9785817f1f14d31ce4c9",
+  "generatedAt": "2026-09-29T01:42:39.378226+00:00",
   "checks": [
     {
       "id": "telemetry-empty-list-boundary",
@@ -45,6 +45,13 @@
       "scenarioType": "boundary",
       "command": "npm test -- --ci --runInBand --runTestsByPath course-tests/public/week-04.test.ts src/course-evaluation/negative-paths.test.ts",
       "evidence": "PASS: 2 suites and 6 tests. The public test confirms redaction of nested user_id, assignment_history, and refresh-token keys, preserves safe technical fields, and verifies the original input is unchanged."
+    },
+    {
+      "id": "application-bootstrap-telemetry",
+      "status": "pass",
+      "scenarioType": "boundary",
+      "command": "npm test -- --ci --runInBand --runTestsByPath course-tests/smoke.test.tsx",
+      "evidence": "PASS: 1 suite, 3 tests. Rendering App invokes the production CampusOpsRoot composition; the captured console event contains only technical context and [REDACTED] token, reporterId, and location fields."
     }
   ]
 }
