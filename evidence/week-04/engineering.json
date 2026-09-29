@@ -1,0 +1,29 @@
+{
+  "schemaVersion": 1,
+  "week": 4,
+  "commitSha": "00f4f448b9bc908bc3f970d1def8526e9db8ca1a",
+  "decision": "El equipo eligio expo-secure-store como mecanismo de almacenamiento seguro para persistir la sesion del usuario (UserSession: userId y role), en previsión de cuando se incorpore el flujo real de autenticacion. En iOS se usa accesibilidad WHEN_UNLOCKED_THIS_DEVICE_ONLY, y en Android el almacenamiento queda respaldado por Android Keystore. SecureSessionAdapter serializa unicamente los campos permitidos, valida el rol al leer y escribir, elimina datos corruptos, y no tiene fallback a AsyncStorage, archivos ni texto plano si el modulo nativo falla.",
+  "alternatives": [
+    "AsyncStorage o JSON en archivos locales: mas simple de implementar, pero no ofrece almacenamiento cifrado de credenciales por si mismo, por lo que fue descartado para datos de sesion.",
+    "Mantener la sesion solo en memoria (sin persistencia): evita el problema de almacenamiento cifrado por completo, pero no permite recuperar la sesion tras reiniciar la app; es la alternativa actualmente en uso (InMemorySessionAdapter) mientras no exista un flujo de login real."
+  ],
+  "tradeoff": "Beneficio: SecureSessionAdapter usa el almacen de credenciales del sistema operativo (Keychain en iOS, Keystore en Android) y limita estrictamente los datos persistidos a userId y role, sin exponer tokens ni otros campos. Costo: depende de capacidades nativas de Android/iOS, por lo que requiere probarse en build nativo (no solo en pruebas unitarias con un sustituto de almacenamiento), y los valores leidos siguen existiendo en memoria durante el uso de la app, lo cual sigue siendo un riesgo residual documentado en docs/security-controls.md.",
+  "requirementIds": ["AC-02", "AC-03", "AC-04"],
+  "verification": [
+    {
+      "command": "npm test -- --ci --runInBand --runTestsByPath src/infrastructure/SecureSessionAdapter.test.ts",
+      "result": "PASS: la prueba confirma persistencia solo de campos permitidos, accesibilidad restringida, rechazo de roles invalidos, limpieza de valores corruptos y borrado de sesion",
+      "evidence": "src/infrastructure/SecureSessionAdapter.test.ts usa un sustituto (fake) de SecureStore para validar la politica y el contrato del adaptador sin depender de un dispositivo real."
+    },
+    {
+      "command": "npm test -- --ci --runInBand course-tests/public/week-04.test.ts",
+      "result": "PASS: 1 suite, 1 test (CampusOps redacts personal and incident-sensitive data while preserving technical context)",
+      "evidence": "course-tests/public/week-04.test.ts confirma que redactForTelemetry oculta los campos sensibles del contrato y conserva unicamente contexto tecnico seguro (incidentId, correlationId, status, attempt, durationMs)."
+    },
+    {
+      "command": "npm run audit:ci",
+      "result": "Exito bajo el umbral configurado de vulnerabilidades criticas; se reportan 2 advisories 'high' transitivos en @xmldom/xmldom y js-yaml",
+      "evidence": "docs/security-controls.md documenta estas advisories como riesgo de dependencias pendiente de revision separada, no relacionado con el control de sesion implementado esta semana."
+    }
+  ]
+}
