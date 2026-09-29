@@ -27,3 +27,27 @@ test('shows a fictitious incident list and its selected detail', async () => {
     expect(view.getByText('Ubicación: Edificio académico ficticio A')).toBeTruthy();
   });
 });
+
+test('application bootstrap sends only redacted telemetry to the console', async () => {
+  const logSpy = jest.spyOn(console, 'log').mockImplementation(() => undefined);
+
+  try {
+    await render(<App />);
+
+    await waitFor(() => {
+      expect(logSpy).toHaveBeenCalledTimes(1);
+      expect(logSpy).toHaveBeenCalledWith(
+        expect.objectContaining({
+          incidentId: expect.any(String),
+          status: 'success',
+          durationMs: expect.any(Number),
+          token: '[REDACTED]',
+          reporterId: '[REDACTED]',
+          location: '[REDACTED]',
+        }),
+      );
+    });
+  } finally {
+    logSpy.mockRestore();
+  }
+});

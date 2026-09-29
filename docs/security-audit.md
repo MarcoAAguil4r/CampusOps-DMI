@@ -16,7 +16,7 @@ No se usaron datos reales. Los identificadores de actores y tokens que aparecen 
 - Busqueda de referencias a tokens, autorizacion, secretos, variables de entorno, `fetch`, HTTP, almacenamiento local y logs.
 - Revisión de `SECURITY.md`, `docs/threat-model.md` y `docs/CAMPUSOPS_API.md`.
 - Verificacion del estado inicial con `git status --short --branch`.
-- No se encontro uso de `console.log`, `console.warn` o `console.error` en el codigo revisado.
+- En el corte inicial de esta auditoria no habia llamadas de consola. La implementacion posterior de Semana 4 agrega un unico sink, `ConsoleTelemetryAdapter`, que pasa los eventos por `redactForTelemetry` antes de `console.log`; la prueba de smoke comprueba el cableado desde la composicion de la app.
 
 ## Hallazgos
 
@@ -129,7 +129,7 @@ La prueba pública de Semana 4 terminó con `Test Suites: 1 passed, 1 total`. La
 | Categoria | Resultado de la revision | Evidencia |
 |---|---|---|
 | A. Credenciales o secretos en el codigo | No se encontraron credenciales reales. Los tokens `course-valid-token`, `course-refresh-0` y sus variantes son fixtures publicos del contrato didactico. | `course-backend/server.mjs`, `docs/CAMPUSOPS_API.md` y `course-backend/README.md` los identifican como valores de prueba. No aparecen claves privadas ni contrasenas reales. |
-| B. Informacion sensible en consola | No se encontraron `console.log`, `console.warn` ni `console.error` en el codigo revisado. | La busqueda sobre el repositorio excluyendo dependencias y artefactos no devolvio logs de payloads, usuarios, tokens o respuestas. |
+| B. Informacion sensible en consola | La app registra eventos de telemetria solo mediante `ConsoleTelemetryAdapter`, que sanitiza antes de escribir. | `src/bootstrap/CampusOpsRoot.tsx`, `src/infrastructure/ConsoleTelemetryAdapter.ts`, `src/course-evaluation/telemetry.test.ts` y `course-tests/smoke.test.tsx` verifican el flujo y la redaccion. |
 | C. Datos personales almacenados innecesariamente | No se encontraron nombres, correos, contrasenas ni perfiles reales almacenados. Las sesiones e incidencias se mantienen en adaptadores en memoria y los datos son ficticios. | `src/infrastructure/InMemorySessionAdapter.ts` y `src/infrastructure/InMemoryIncidentRepository.ts`. No se usa `AsyncStorage`, `SecureStore` ni `localStorage`. |
 | D. Informacion sensible en mensajes de error | No se encontro un mensaje que incluya contrasenas, tokens, URLs de bases de datos o datos personales. | `src/api/courseBackend.ts` solo expone el codigo HTTP en el error de salud; `course-backend/server.mjs` devuelve codigos genericos como `invalid_request` y `unauthorized`. |
 | E. Archivos sensibles en el repositorio | No existe un archivo `.env` versionado. `.env` esta excluido y solo se conserva `.env.example` con una URL local sin credenciales. | `.gitignore`, `.env.example`, `git ls-files` y `git status --short --branch`. |
@@ -165,7 +165,7 @@ La prueba pública de Semana 4 terminó con `Test Suites: 1 passed, 1 total`. La
 
 ### SA-03 - Sanitizacion de telemetria de Semana 4
 
-**Severidad:** Alta si se agregan logs o telemetria que reciban payloads sin sanitizar; actualmente no se observo un flujo de logs activo que exponga datos.
+**Severidad:** Alta si un futuro sink omite la sanitizacion; el flujo actual de telemetria pasa por el adaptador que redacta antes de escribir en consola.
 
 **Estado:** Corregido en esta rama.
 
@@ -177,7 +177,7 @@ La prueba pública de Semana 4 terminó con `Test Suites: 1 passed, 1 total`. La
 
 **Impacto previo:** Cualquier llamada a esa funcion fallaba en ejecucion. Si un desarrollador registraba el objeto original como alternativa, podia enviar a logs datos privados, tokens o ubicaciones.
 
-**Recomendacion:** Mantener las pruebas para objetos anidados, listas, claves con guion o guion bajo y campos tecnicos permitidos. Los logs deben recibir solo la salida redactada.
+**Recomendacion:** Mantener las pruebas para objetos anidados, listas, claves con guion o guion bajo y campos tecnicos permitidos. Todos los sinks nuevos deben recibir solo la salida redactada; conservar la prueba de smoke que verifica la inyeccion en `CampusOpsRoot`.
 
 ## Controles confirmados
 
@@ -190,7 +190,7 @@ La prueba pública de Semana 4 terminó con `Test Suites: 1 passed, 1 total`. La
 
 ## Priorizacion
 
-1. Mantener y ampliar las pruebas de `redactForTelemetry` antes de incorporar nueva telemetria o logging de payloads.
+1. Mantener y ampliar las pruebas de `redactForTelemetry` y asegurar que cada sink de telemetria se inyecte mediante el adaptador sanitizado.
 2. Mantener el backend didactico aislado y local durante las pruebas.
 3. Antes de cualquier despliegue real, exigir TLS y restringir CORS a origenes conocidos.
 4. Repetir `npm audit --omit=dev --audit-level=critical` despues de cambios de dependencias.
