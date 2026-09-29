@@ -48,6 +48,25 @@
       "command": "npm.cmd test -- --ci --runInBand --runTestsByPath course-tests/public/week-04.test.ts src/course-evaluation/telemetry.test.ts src/application/IncidentApplication.test.ts",
       "observedResult": "PASS: 3 suites, 7 tests ejecutados y 7 aprobados; 0 snapshots. Pasaron course-tests/public/week-04.test.ts, src/course-evaluation/telemetry.test.ts y src/application/IncidentApplication.test.ts.",
       "explanation": "Se conecto redactForTelemetry con un puerto de telemetria y un adaptador de consola para garantizar que los eventos sean sanitizados antes de llegar al logging real, manteniendo separado el contrato de telemetria de la infraestructura. La sanitizacion cubre claves sensibles con variantes de mayusculas, guion bajo y guion, objetos y arrays anidados, valores especiales y reemplazo por [REDACTED], sin perder el contexto tecnico seguro ni mutar el objeto de entrada."
+    },
+    {
+      "studentId": "3523110484",
+      "commitShas": [
+        "bbc599db9af87de3e9387d8db9a541e2ed334a12",
+        "9e79df3b800f8573c08dc9bb58fb2d9057395b17"
+      ],
+      "files": [
+        "src/course-evaluation/negative-paths.test.ts",
+        "reports/week-04/negative-tests.json"
+      ],
+      "tests": [
+        "npm test -- --ci --runInBand --runTestsByPath src/course-evaluation/negative-paths.test.ts"
+      ],
+      "reviews": [],
+      "prediction": "Esperaba que, incluso en casos limite (lista vacia) y de falla (repositorio que lanza error, sesion corrupta o con campos inyectados), la telemetria y el almacenamiento seguro de sesion nunca expusieran datos sensibles en consola, y que un JSON malformado se descartara sin registrar su contenido.",
+      "command": "npm test -- --ci --runInBand --runTestsByPath src/course-evaluation/negative-paths.test.ts",
+      "observedResult": "PASS: 1 suite, 4 tests ejecutados y 4 aprobados. Se confirmo que ConsoleTelemetryAdapter sigue redactando token/reporterId/location incluso con lista vacia, que un error del repositorio se propaga sin invocar console.log ni console.error, y que SecureSessionAdapter descarta sesiones con campos inyectados o JSON malformado sin exponer ni registrar su contenido.",
+      "explanation": "Se diseñaron y ejecutaron 4 pruebas negativas reales sobre el codigo ya implementado en telemetria y sesion segura, cubriendo un caso boundary (lista vacia) y tres casos failure (error de repositorio, sesion con datos inyectados, JSON malformado). Ninguna prueba simula resultados: todas corren contra las clases reales del proyecto (IncidentApplication, ConsoleTelemetryAdapter, SecureSessionAdapter)."
     }
   ]
 }
