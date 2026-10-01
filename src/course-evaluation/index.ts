@@ -56,7 +56,27 @@ export function redactForTelemetry(_input: unknown): unknown {
 }
 
 export function parseRemoteResource(_input: unknown): ParseResult {
-  return pending('parseRemoteResource');
+  try {
+    if (!isRecord(_input)) return { ok: false, error: 'contract' };
+
+    const { id, version, status, payload } = _input;
+    if (typeof id !== 'string' || id.trim().length === 0) return { ok: false, error: 'contract' };
+    if (!Number.isInteger(version) || typeof version !== 'number' || version < 0) {
+      return { ok: false, error: 'contract' };
+    }
+    if (typeof status !== 'string' || status.trim().length === 0) return { ok: false, error: 'contract' };
+    if (payload !== null && !isRecord(payload)) return { ok: false, error: 'contract' };
+
+    return { ok: true, value: { id, version, status, payload } };
+  } catch {
+    return { ok: false, error: 'contract' };
+  }
+}
+
+function isRecord(value: unknown): value is Record<string, unknown> {
+  if (typeof value !== 'object' || value === null || Array.isArray(value)) return false;
+  const prototype = Object.getPrototypeOf(value);
+  return prototype === Object.prototype || prototype === null;
 }
 
 export function coordinateRefresh(_events: readonly AuthEvent[]): Readonly<{
