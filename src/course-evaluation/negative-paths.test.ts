@@ -13,6 +13,10 @@ class StubIncidentRepository implements IncidentRepository {
     return this.incidents;
   }
 
+  async create(): Promise<Incident> {
+    throw new Error('not implemented in this stub');
+  }
+
   async findById(id: string): Promise<Incident | null> {
     return this.incidents.find((incident) => incident.id === id) ?? null;
   }
@@ -21,6 +25,10 @@ class StubIncidentRepository implements IncidentRepository {
 class FailingIncidentRepository implements IncidentRepository {
   async list(): Promise<readonly Incident[]> {
     throw new Error('Backend unavailable for incident list');
+  }
+
+  async create(): Promise<Incident> {
+    throw new Error('not implemented in this stub');
   }
 
   async findById(): Promise<Incident | null> {

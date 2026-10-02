@@ -9,6 +9,10 @@ class StubIncidentRepository implements IncidentRepository {
     return this.incidents;
   }
 
+  async create(): Promise<Incident> {
+    throw new Error('not implemented in this stub');
+  }
+
   async findById(id: string): Promise<Incident | null> {
     return this.incidents.find((incident) => incident.id === id) ?? null;
   }

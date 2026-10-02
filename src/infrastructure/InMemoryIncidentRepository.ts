@@ -1,8 +1,9 @@
 import type { Incident } from '../domain/incidents';
-import type { IncidentRepository } from '../domain/ports/IncidentRepository';
+import { createIncident } from '../domain/incidents';
+import type { IncidentRepository, NewRemoteIncidentInput } from '../domain/ports/IncidentRepository';
 
 export class InMemoryIncidentRepository implements IncidentRepository {
-  public constructor(private readonly incidents: readonly Incident[]) {}
+  public constructor(private incidents: readonly Incident[]) {}
 
   async list(): Promise<readonly Incident[]> {
     return this.incidents;
@@ -10,6 +11,18 @@ export class InMemoryIncidentRepository implements IncidentRepository {
 
   async findById(id: string): Promise<Incident | null> {
     return this.incidents.find((incident) => incident.id === id) ?? null;
+  }
+
+  async create(input: NewRemoteIncidentInput): Promise<Incident> {
+    const created = createIncident({
+      id: `local-${Date.now()}`,
+      title: input.description,
+      description: input.description,
+      category: input.category,
+      location: { source: 'manual', label: input.location },
+    });
+    this.incidents = [...this.incidents, created];
+    return created;
   }
 }
 
