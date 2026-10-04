@@ -2,8 +2,8 @@
   "schemaVersion": 1,
   "week": 5,
   "mode": "public",
-  "commitSha": "b76ddc060b773ddcc63fc2b3f15102f9a0710ad3",
-  "evaluatedAt": "2026-10-04T07:05:23.197103+00:00",
+  "commitSha": "553560c050e37a9780a75a9c41f52a5fce4cd46b",
+  "evaluatedAt": "2026-10-04T08:03:19.022998+00:00",
   "status": "pass",
   "checks": [
     {
@@ -74,7 +74,7 @@
     {
       "id": "toolchain_4",
       "status": "pass",
-      "detail": "npm test -- --ci --runInBand course-tests/public/week-05.test.ts\n> dmi-react-native-starter@1.0.0 test\n> jest --no-watchman --cacheDirectory .jest-cache --ci --runInBand course-tests/public/week-05.test.ts\n\n\nPASS course-tests/public/week-05.test.ts\n  âˆš CampusOps validates the published incident DTO boundary 0 (2 ms)\n  âˆš CampusOps validates the published incident DTO boundary 1\n  âˆš CampusOps validates the published incident DTO boundary 2\n  âˆš CampusOps validates the published incident DTO boundary 3 (1 ms)\n  âˆš CampusOps validates the published incident DTO boundary 4\n\nTest Suites: 1 passed, 1 total\nTests:       5 passed, 5 total\nSnapshots:   0 total\nTime:        1.456 s, estimated 2 s\nRan all test suites matching /course-tests\\\\public\\\\week-05.test.ts/i."
+      "detail": "npm test -- --ci --runInBand course-tests/public/week-05.test.ts\n> dmi-react-native-starter@1.0.0 test\n> jest --no-watchman --cacheDirectory .jest-cache --ci --runInBand course-tests/public/week-05.test.ts\n\n\nPASS course-tests/public/week-05.test.ts\n  âˆš CampusOps validates the published incident DTO boundary 0 (3 ms)\n  âˆš CampusOps validates the published incident DTO boundary 1 (1 ms)\n  âˆš CampusOps validates the published incident DTO boundary 2 (1 ms)\n  âˆš CampusOps validates the published incident DTO boundary 3\n  âˆš CampusOps validates the published incident DTO boundary 4 (1 ms)\n\nTest Suites: 1 passed, 1 total\nTests:       5 passed, 5 total\nSnapshots:   0 total\nTime:        1.752 s\nRan all test suites matching /course-tests\\\\public\\\\week-05.test.ts/i."
     }
   ]
 }

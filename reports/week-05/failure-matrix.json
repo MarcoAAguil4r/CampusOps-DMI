@@ -1,29 +1,29 @@
 {
   "schemaVersion": 1,
   "week": 5,
-  "commitSha": "b76ddc060b773ddcc63fc2b3f15102f9a0710ad3",
-  "generatedAt": "2026-10-04T07:03:30Z",
+  "commitSha": "553560c050e37a9780a75a9c41f52a5fce4cd46b",
+  "generatedAt": "2026-10-04T08:01:55Z",
   "checks": [
     {
       "id": "malformed",
       "status": "pass",
       "scenarioType": "failure",
       "command": "npm.cmd test -- --ci --runInBand src/infrastructure/RemoteIncidentRepository.test.ts",
-      "evidence": "PASS within the 2-suite/21-test run: a 200 response whose body is '{\"items\": [}' rejects with ContractError; list() resolves no resource and the repository has no persistence path."
+      "evidence": "PASS within the 2-suite/24-test run: a 200 response whose body is '{\"items\": [}' rejects with ContractError; list() resolves no resource and the repository has no persistence path."
     },
     {
       "id": "server-error-500",
       "status": "pass",
       "scenarioType": "failure",
       "command": "npm.cmd test -- --ci --runInBand src/infrastructure/RemoteIncidentRepository.test.ts",
-      "evidence": "PASS within the 2-suite/21-test run: controlled 500 becomes HttpStatusError with status 500 and code controlled_failure, distinct from ContractError; only the safe code is retained, not a raw body."
+      "evidence": "PASS within the 2-suite/24-test run: controlled 500 becomes HttpStatusError with status 500 and code controlled_failure, distinct from ContractError; only the safe code is retained, not a raw body."
     },
     {
       "id": "slow-timeout",
       "status": "pass",
       "scenarioType": "failure",
       "command": "npm.cmd test -- --ci --runInBand src/infrastructure/RemoteIncidentRepository.test.ts",
-      "evidence": "PASS within the 2-suite/21-test run: a delayed response aborted by CampusOpsApiClient timeoutMs rejects as TransportTimeoutError, not as HTTP 500 or success."
+      "evidence": "PASS within the 2-suite/24-test run: delayed headers and a delayed response body are aborted by CampusOpsApiClient timeoutMs and reject as TransportTimeoutError, not as HTTP 500 or success."
     },
     {
       "id": "timeout-after-commit",

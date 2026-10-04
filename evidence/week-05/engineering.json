@@ -1,8 +1,8 @@
 {
   "schemaVersion": 1,
   "week": 5,
-  "commitSha": "b76ddc060b773ddcc63fc2b3f15102f9a0710ad3",
-  "decision": "The implemented boundary validates unknown HTTP JSON as a RemoteResource DTO before RemoteIncidentRepository converts it into an Incident domain object. CampusOpsApiClient classifies invalid JSON as ContractError, non-2xx replies as HttpStatusError carrying only status and safe code, and aborted requests as TransportTimeoutError. RemoteIncidentRepository validates each list/detail/create DTO and rejects null or incomplete payloads before constructing domain data.",
+  "commitSha": "553560c050e37a9780a75a9c41f52a5fce4cd46b",
+  "decision": "The implemented boundary validates unknown HTTP JSON as a RemoteResource DTO before RemoteIncidentRepository converts it into an Incident domain object. CampusOpsApiClient classifies invalid JSON as ContractError, non-2xx replies as HttpStatusError carrying only status and safe code, network failures as TransportError, and aborts as TransportTimeoutError through response-body consumption. A valid DTO with payload null is preserved by the parser but rejected for domain mapping as IncidentDomainMappingError, never filled with invented values. Creation receives a caller-owned stable Idempotency-Key so an identical replay uses the same key and body.",
   "alternatives": [
     "Accept HTTP JSON as a domain Incident directly and let UI/application code discover missing or invalid fields later.",
     "Validate the DTO at the infrastructure boundary, then convert only the flow-required validated payload to the domain Incident.",
@@ -14,7 +14,7 @@
     {
       "command": "npm.cmd test -- --ci --runInBand src/course-evaluation/parseRemoteResource.test.ts src/infrastructure/RemoteIncidentRepository.test.ts",
       "result": "pass",
-      "evidence": "PASS: 2 suites and 21 tests. DTO invalid boundaries, malformed JSON, HTTP 500 and abort timeout are covered against the real parser/repository/client classes."
+      "evidence": "PASS: 2 suites and 24 tests. DTO invalid boundaries, valid null payload mapping, malformed JSON, HTTP 500, network failure, header/body timeout and stable create replay are covered against the parser/repository/client classes."
     },
     {
       "command": "npm.cmd run backend:self-test",

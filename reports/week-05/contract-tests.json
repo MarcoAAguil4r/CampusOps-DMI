@@ -1,22 +1,22 @@
 {
   "schemaVersion": 1,
   "week": 5,
-  "commitSha": "b76ddc060b773ddcc63fc2b3f15102f9a0710ad3",
-  "generatedAt": "2026-10-04T07:04:37Z",
+  "commitSha": "553560c050e37a9780a75a9c41f52a5fce4cd46b",
+  "generatedAt": "2026-10-04T08:01:55Z",
   "checks": [
     {
       "id": "dto-published-boundary",
       "status": "pass",
       "scenarioType": "boundary",
       "command": "npm.cmd test -- --ci --runInBand src/course-evaluation/parseRemoteResource.test.ts src/infrastructure/RemoteIncidentRepository.test.ts",
-      "evidence": "PASS: 2 suites, 21 tests. The DTO suite covers a valid envelope, null payload, empty ID, string version, null input, array envelope, array payload, and ignored future envelope field."
+      "evidence": "PASS: 2 suites, 24 tests. The DTO suite covers a valid envelope, null payload, empty ID, string version, null input, array envelope, array payload, and ignored future envelope field."
     },
     {
       "id": "client-contract-http-and-timeout-errors",
       "status": "pass",
       "scenarioType": "failure",
       "command": "npm.cmd test -- --ci --runInBand src/course-evaluation/parseRemoteResource.test.ts src/infrastructure/RemoteIncidentRepository.test.ts",
-      "evidence": "PASS: RemoteIncidentRepository tests reject malformed JSON with ContractError, expose HTTP 500 as HttpStatusError with safe code controlled_failure, and expose an abort as TransportTimeoutError."
+      "evidence": "PASS within the 2-suite/24-test run: malformed JSON maps to ContractError; HTTP 500 maps to HttpStatusError with safe code controlled_failure; connection failure maps to TransportError; abort maps to TransportTimeoutError; a valid null-payload DTO maps to IncidentDomainMappingError without being classified as a contract-format error."
     },
     {
       "id": "public-week-05-dto-contract",
