@@ -1,0 +1,29 @@
+{
+  "schemaVersion": 1,
+  "week": 5,
+  "commitSha": "b605524db6b5fa95ddd59e599ccf860aeb337e02",
+  "generatedAt": "2026-10-04T02:03:00Z",
+  "checks": [
+    {
+      "id": "dto-published-boundary",
+      "status": "pass",
+      "scenarioType": "boundary",
+      "command": "npm.cmd test -- --ci --runInBand src/course-evaluation/parseRemoteResource.test.ts src/infrastructure/RemoteIncidentRepository.test.ts",
+      "evidence": "PASS: 2 suites, 21 tests. The DTO suite covers a valid envelope, null payload, empty ID, string version, null input, array envelope, array payload, and ignored future envelope field."
+    },
+    {
+      "id": "client-contract-http-and-timeout-errors",
+      "status": "pass",
+      "scenarioType": "failure",
+      "command": "npm.cmd test -- --ci --runInBand src/course-evaluation/parseRemoteResource.test.ts src/infrastructure/RemoteIncidentRepository.test.ts",
+      "evidence": "PASS: RemoteIncidentRepository tests reject malformed JSON with ContractError, expose HTTP 500 as HttpStatusError with safe code controlled_failure, and expose an abort as TransportTimeoutError."
+    },
+    {
+      "id": "public-week-05-dto-contract",
+      "status": "pass",
+      "scenarioType": "nominal",
+      "command": "py -3 tools/course_public_evaluator.py --week 5 --mode public --execute-toolchain",
+      "evidence": "The generated pre-evidence public report recorded toolchain_4 PASS: course-tests/public/week-05.test.ts, 1 suite and 5 tests passed; its only failure was missing evidence files."
+    }
+  ]
+}

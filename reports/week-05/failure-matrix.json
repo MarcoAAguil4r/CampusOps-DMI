@@ -1,0 +1,50 @@
+{
+  "schemaVersion": 1,
+  "week": 5,
+  "commitSha": "b605524db6b5fa95ddd59e599ccf860aeb337e02",
+  "generatedAt": "2026-10-04T02:03:00Z",
+  "checks": [
+    {
+      "id": "malformed",
+      "status": "pass",
+      "scenarioType": "failure",
+      "command": "npm.cmd test -- --ci --runInBand src/infrastructure/RemoteIncidentRepository.test.ts",
+      "evidence": "PASS within the 2-suite/21-test run: a 200 response whose body is '{\"items\": [}' rejects with ContractError; list() resolves no resource and the repository has no persistence path."
+    },
+    {
+      "id": "server-error-500",
+      "status": "pass",
+      "scenarioType": "failure",
+      "command": "npm.cmd test -- --ci --runInBand src/infrastructure/RemoteIncidentRepository.test.ts",
+      "evidence": "PASS within the 2-suite/21-test run: controlled 500 becomes HttpStatusError with status 500 and code controlled_failure, distinct from ContractError; only the safe code is retained, not a raw body."
+    },
+    {
+      "id": "slow-timeout",
+      "status": "pass",
+      "scenarioType": "failure",
+      "command": "npm.cmd test -- --ci --runInBand src/infrastructure/RemoteIncidentRepository.test.ts",
+      "evidence": "PASS within the 2-suite/21-test run: a delayed response aborted by CampusOpsApiClient timeoutMs rejects as TransportTimeoutError, not as HTTP 500 or success."
+    },
+    {
+      "id": "timeout-after-commit",
+      "status": "pass",
+      "scenarioType": "failure",
+      "command": "npm.cmd run backend:self-test",
+      "evidence": "PASS: CampusOps backend contracts: roles, reassignment conflict, lost response, idempotency, evidence and geocoding PASS. The controlled test aborts a close request at 250 ms under X-Course-Scenario: timeout_after_commit, then replays the same key and observes duplicate=true, status=closed, version=5 and one close history entry."
+    },
+    {
+      "id": "idempotency-duplicate-and-key-reuse",
+      "status": "pass",
+      "scenarioType": "boundary",
+      "command": "npm.cmd run backend:self-test",
+      "evidence": "PASS: the controlled backend self-test repeats an identical creation/action with the same Idempotency-Key and observes the duplicate response; it then reuses close-lost-response with different content and observes HTTP 409."
+    },
+    {
+      "id": "additional-http-statuses",
+      "status": "pass",
+      "scenarioType": "failure",
+      "command": "npm.cmd run backend:self-test",
+      "evidence": "PASS: the controlled backend self-test exercises 401, 403, 409, 422, 429 and 500. CampusOpsApiClient preserves HTTP status and safe server code in HttpStatusError for non-2xx responses; it does not map them to contract or timeout errors."
+    }
+  ]
+}

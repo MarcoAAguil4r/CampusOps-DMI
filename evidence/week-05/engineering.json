@@ -1,0 +1,30 @@
+{
+  "schemaVersion": 1,
+  "week": 5,
+  "commitSha": "b605524db6b5fa95ddd59e599ccf860aeb337e02",
+  "decision": "The implemented boundary validates unknown HTTP JSON as a RemoteResource DTO before RemoteIncidentRepository converts it into an Incident domain object. CampusOpsApiClient classifies invalid JSON as ContractError, non-2xx replies as HttpStatusError carrying only status and safe code, and aborted requests as TransportTimeoutError. RemoteIncidentRepository validates each list/detail/create DTO and rejects null or incomplete payloads before constructing domain data.",
+  "alternatives": [
+    "Accept HTTP JSON as a domain Incident directly and let UI/application code discover missing or invalid fields later.",
+    "Validate the DTO at the infrastructure boundary, then convert only the flow-required validated payload to the domain Incident.",
+    "Treat all fetch, parsing and HTTP failures as one generic Error without preserving error category or safe status information."
+  ],
+  "tradeoff": "Boundary validation adds DTO-to-domain mapping and explicit error types, so each new endpoint needs validation code. In return, malformed or nullable transport data cannot become invented domain state, HTTP recovery can use a status/code without logging raw server bodies, and a timeout remains distinguishable from a 500. The current repository does not persist remote responses, so failure paths cannot partially persist an incident through this adapter.",
+  "requirementIds": ["AC-01", "AC-02", "AC-03", "AC-04", "AC-05"],
+  "verification": [
+    {
+      "command": "npm.cmd test -- --ci --runInBand src/course-evaluation/parseRemoteResource.test.ts src/infrastructure/RemoteIncidentRepository.test.ts",
+      "result": "pass",
+      "evidence": "PASS: 2 suites and 21 tests. DTO invalid boundaries, malformed JSON, HTTP 500 and abort timeout are covered against the real parser/repository/client classes."
+    },
+    {
+      "command": "npm.cmd run backend:self-test",
+      "result": "pass",
+      "evidence": "PASS: controlled backend confirms authorization responses, lost-response replay, duplicate idempotency behavior, key reuse conflict, 429/500 and malformed JSON scenarios."
+    },
+    {
+      "command": "py -3 tools/course_public_evaluator.py --week 5 --mode verify --execute-toolchain",
+      "result": "pass",
+      "evidence": "Generated reports/week-05/verify.json status=pass with typecheck, lint, audit, smoke and backend self-test all passing."
+    }
+  ]
+}
