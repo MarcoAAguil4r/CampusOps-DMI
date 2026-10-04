@@ -1,8 +1,8 @@
 {
   "schemaVersion": 1,
   "week": 5,
-  "commitSha": "b605524db6b5fa95ddd59e599ccf860aeb337e02",
-  "generatedAt": "2026-10-04T02:03:00Z",
+  "commitSha": "b76ddc060b773ddcc63fc2b3f15102f9a0710ad3",
+  "generatedAt": "2026-10-04T07:04:37Z",
   "checks": [
     {
       "id": "dto-published-boundary",
@@ -23,7 +23,7 @@
       "status": "pass",
       "scenarioType": "nominal",
       "command": "py -3 tools/course_public_evaluator.py --week 5 --mode public --execute-toolchain",
-      "evidence": "The generated pre-evidence public report recorded toolchain_4 PASS: course-tests/public/week-05.test.ts, 1 suite and 5 tests passed; its only failure was missing evidence files."
+      "evidence": "The current public run completed with status=pass: course-tests/public/week-05.test.ts passed 1 suite and 5 tests, and all required report/evidence schemas passed."
     }
   ]
 }

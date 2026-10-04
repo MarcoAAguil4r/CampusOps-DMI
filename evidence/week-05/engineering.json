@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "week": 5,
-  "commitSha": "b605524db6b5fa95ddd59e599ccf860aeb337e02",
+  "commitSha": "b76ddc060b773ddcc63fc2b3f15102f9a0710ad3",
   "decision": "The implemented boundary validates unknown HTTP JSON as a RemoteResource DTO before RemoteIncidentRepository converts it into an Incident domain object. CampusOpsApiClient classifies invalid JSON as ContractError, non-2xx replies as HttpStatusError carrying only status and safe code, and aborted requests as TransportTimeoutError. RemoteIncidentRepository validates each list/detail/create DTO and rejects null or incomplete payloads before constructing domain data.",
   "alternatives": [
     "Accept HTTP JSON as a domain Incident directly and let UI/application code discover missing or invalid fields later.",

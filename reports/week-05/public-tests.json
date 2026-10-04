@@ -2,8 +2,8 @@
   "schemaVersion": 1,
   "week": 5,
   "mode": "public",
-  "commitSha": "5dc7c4a30bb60fd2b46159922a0b5fcd36105391",
-  "evaluatedAt": "2026-10-04T03:15:15.943066+00:00",
+  "commitSha": "b76ddc060b773ddcc63fc2b3f15102f9a0710ad3",
+  "evaluatedAt": "2026-10-04T07:05:23.197103+00:00",
   "status": "pass",
   "checks": [
     {
@@ -39,17 +39,17 @@
     {
       "id": "schema:reports/week-05/contract-tests.json",
       "status": "pass",
-      "detail": "3 checks indexed, 2 boundary/failure; evidence-only commit; invalid changes=[]"
+      "detail": "3 checks indexed, 2 boundary/failure; report evaluates HEAD"
     },
     {
       "id": "schema:reports/week-05/failure-matrix.json",
       "status": "pass",
-      "detail": "6 checks indexed, 6 boundary/failure; evidence-only commit; invalid changes=[]"
+      "detail": "6 checks indexed, 6 boundary/failure; report evaluates HEAD"
     },
     {
       "id": "schema:evidence/week-05/engineering.json",
       "status": "pass",
-      "detail": "decision evidence is substantive and reproducible; evidence-only commit; invalid changes=[]"
+      "detail": "decision evidence is substantive and reproducible; report evaluates HEAD"
     },
     {
       "id": "schema:evidence/week-05/individual.json",
@@ -64,7 +64,7 @@
     {
       "id": "toolchain_2",
       "status": "pass",
-      "detail": "npm run lint\n> dmi-react-native-starter@1.0.0 lint\n> eslint .\n\n\nD:\\DMI\\CampusOps-DMI\\course-tests\\team\\week-03-authorization.test.ts\n  79:18  warning  'e' is defined but never used  @typescript-eslint/no-unused-vars\n\nâœ– 1 problem (0 errors, 1 warning)"
+      "detail": "npm run lint\n> dmi-react-native-starter@1.0.0 lint\n> eslint .\n\n\nE:\\PROYECTOS\\10Â° B - DMI\\CampusOps-Semana-01\\course-tests\\team\\week-03-authorization.test.ts\n  79:18  warning  'e' is defined but never used  @typescript-eslint/no-unused-vars\n\nâœ– 1 problem (0 errors, 1 warning)"
     },
     {
       "id": "toolchain_3",
@@ -74,7 +74,7 @@
     {
       "id": "toolchain_4",
       "status": "pass",
-      "detail": "npm test -- --ci --runInBand course-tests/public/week-05.test.ts\n> dmi-react-native-starter@1.0.0 test\n> jest --no-watchman --cacheDirectory .jest-cache --ci --runInBand course-tests/public/week-05.test.ts\n\n\nPASS course-tests/public/week-05.test.ts\n  âˆš CampusOps validates the published incident DTO boundary 0 (3 ms)\n  âˆš CampusOps validates the published incident DTO boundary 1\n  âˆš CampusOps validates the published incident DTO boundary 2\n  âˆš CampusOps validates the published incident DTO boundary 3\n  âˆš CampusOps validates the published incident DTO boundary 4\n\nTest Suites: 1 passed, 1 total\nTests:       5 passed, 5 total\nSnapshots:   0 total\nTime:        1.779 s, estimated 3 s\nRan all test suites matching /course-tests\\\\public\\\\week-05.test.ts/i."
+      "detail": "npm test -- --ci --runInBand course-tests/public/week-05.test.ts\n> dmi-react-native-starter@1.0.0 test\n> jest --no-watchman --cacheDirectory .jest-cache --ci --runInBand course-tests/public/week-05.test.ts\n\n\nPASS course-tests/public/week-05.test.ts\n  âˆš CampusOps validates the published incident DTO boundary 0 (2 ms)\n  âˆš CampusOps validates the published incident DTO boundary 1\n  âˆš CampusOps validates the published incident DTO boundary 2\n  âˆš CampusOps validates the published incident DTO boundary 3 (1 ms)\n  âˆš CampusOps validates the published incident DTO boundary 4\n\nTest Suites: 1 passed, 1 total\nTests:       5 passed, 5 total\nSnapshots:   0 total\nTime:        1.456 s, estimated 2 s\nRan all test suites matching /course-tests\\\\public\\\\week-05.test.ts/i."
     }
   ]
 }
