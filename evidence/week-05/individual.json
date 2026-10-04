@@ -10,31 +10,31 @@
       "tests": ["course-tests/public/week-05.test.ts"],
       "reviews": ["Audited the published DTO envelope and parser test coverage before the client integration was evaluated."],
       "prediction": "A valid envelope should retain null payload and unknown future fields should not enter the parsed DTO.",
-      "command": "npm.cmd test -- --ci --runInBand src/course-evaluation/parseRemoteResource.test.ts",
-      "observedResult": "The combined DTO/client run passed 2 suites and 21 tests; invalid envelope cases returned the contract failure result.",
+      "command": "npm.cmd test -- --ci --runInBand src/course-evaluation/parseRemoteResource.test.ts src/infrastructure/RemoteIncidentRepository.test.ts",
+      "observedResult": "PASS: the combined DTO/client run completed 2 suites and 21 tests; invalid envelope cases returned the contract failure result.",
       "explanation": "This record covers the authored DTO contract-validation implementation and its parser tests; it does not attribute the later HTTP client implementation to this member."
     },
     {
-      "studentId": "3522110617",
-      "commitShas": ["150bd8e6aed68d331d3374520c4a6ac3c586a03e"],
-      "files": ["course-tests/team/week-03-authorization.test.ts"],
-      "tests": ["npm.cmd run backend:self-test"],
-      "reviews": ["Reviewed the controlled backend scenarios and the distinction between authorization, version conflict and idempotent replay before the Week 5 closure."],
-      "prediction": "The deterministic backend should preserve a committed close after the response is lost and return a duplicate result when the same operation is replayed.",
-      "command": "npm.cmd run backend:self-test",
-      "observedResult": "PASS: CampusOps backend contracts: roles, reassignment conflict, lost response, idempotency, evidence and geocoding PASS.",
-      "explanation": "This member's historical authored test commit supplies the corroborated individual record; the Week 5 review used the existing local backend self-test and does not claim authorship of the HTTP client."
-    },
-    {
       "studentId": "3523110484",
-      "commitShas": ["bbc599db9af87de3e9387d8db9a541e2ed334a12"],
-      "files": ["reports/week-05/contract-tests.json", "reports/week-05/failure-matrix.json", "evidence/week-05/engineering.json", "evidence/week-05/individual.json"],
-      "tests": ["npm.cmd test -- --ci --runInBand src/course-evaluation/parseRemoteResource.test.ts src/infrastructure/RemoteIncidentRepository.test.ts", "npm.cmd run backend:self-test"],
-      "reviews": ["Audited b1a887ce and b605524, the DTO/client separation, and the evaluator schema before consolidating the Week 5 evidence."],
-      "prediction": "Malformed JSON, HTTP 500 and an abort timeout must be three distinct non-success outcomes; an aborted write must be replayed with its stable key rather than assumed absent.",
+      "commitShas": ["b605524db6b5fa95ddd59e599ccf860aeb337e02"],
+      "files": ["src/infrastructure/CampusOpsApiClient.ts", "src/infrastructure/RemoteIncidentRepository.ts", "src/infrastructure/RemoteIncidentRepository.test.ts", "src/infrastructure/httpErrors.ts"],
+      "tests": ["src/infrastructure/RemoteIncidentRepository.test.ts"],
+      "reviews": ["Implemented the HTTP client and repository integration governed by the published contract, including explicit HTTP, contract and timeout error representations."],
+      "prediction": "A malformed response, HTTP 500 and an abort timeout must remain distinguishable so no invalid response becomes a domain incident.",
       "command": "npm.cmd test -- --ci --runInBand src/course-evaluation/parseRemoteResource.test.ts src/infrastructure/RemoteIncidentRepository.test.ts",
       "observedResult": "PASS: 2 suites, 21 tests. The repository test suite rejects malformed JSON, exposes 500 as HttpStatusError, and exposes the abort as TransportTimeoutError.",
-      "explanation": "This Integrante 3 record covers contract and failure testing, malformed/500/timeout analysis, the failure matrix, engineering evidence, consolidation and final review. It deliberately does not attribute the original CampusOpsApiClient implementation to this member."
+      "explanation": "This record covers Dulce's authored HTTP incident client, repository adapter, error types and their implementation tests. It does not attribute the DTO parser or the evidence-consolidation work to Dulce."
+    },
+    {
+      "studentId": "3522110617",
+      "commitShas": ["5dc7c4a30bb60fd2b46159922a0b5fcd36105391"],
+      "files": ["evidence/week-05/engineering.json", "evidence/week-05/individual.json", "reports/week-05/contract-tests.json", "reports/week-05/failure-matrix.json", "reports/week-05/public-tests.json", "reports/week-05/verify.json"],
+      "tests": ["npm.cmd test -- --ci --runInBand src/course-evaluation/parseRemoteResource.test.ts src/infrastructure/RemoteIncidentRepository.test.ts", "npm.cmd run backend:self-test"],
+      "reviews": ["Reviewed commits b1a887ce and b605524 for DTO/transport/domain separation, failure handling and the public-evaluator evidence schema before consolidating the closure artifacts."],
+      "prediction": "Malformed JSON, HTTP 500 and an abort timeout should produce distinct non-success outcomes; a lost write response should be replayed with its stable idempotency key rather than treated as proof that no write occurred.",
+      "command": "npm.cmd test -- --ci --runInBand src/course-evaluation/parseRemoteResource.test.ts src/infrastructure/RemoteIncidentRepository.test.ts",
+      "observedResult": "PASS: 2 suites and 21 tests. The existing repository tests reject malformed JSON, expose HTTP 500 as HttpStatusError and expose an abort as TransportTimeoutError; npm.cmd run backend:self-test also passed for lost-response and idempotency scenarios.",
+      "explanation": "This Integrante 3 record covers failure-scenario review, contract-test and failure-matrix evidence, engineering decision documentation, individual-evidence consolidation and closure coordination. Reviewing and consolidating Marco's DTO work and Dulce's HTTP-client work did not constitute implementing either component."
     }
   ]
 }
