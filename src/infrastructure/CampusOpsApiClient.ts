@@ -1,4 +1,4 @@
-import { ContractError, HttpStatusError, TransportTimeoutError } from './httpErrors';
+import { ContractError, HttpStatusError, TransportError, TransportTimeoutError } from './httpErrors';
 
 export type CampusOpsApiClientConfig = Readonly<{
   baseUrl: string;
@@ -19,7 +19,7 @@ const DEFAULT_TIMEOUT_MS = 5000;
 export class CampusOpsApiClient {
   public constructor(private readonly config: CampusOpsApiClientConfig) {}
 
-    async request(init: JsonRequestInit): Promise<unknown> {
+  async request(init: JsonRequestInit): Promise<unknown> {
     const controller = new AbortController();
     const timeout = setTimeout(() => controller.abort(), this.config.timeoutMs ?? DEFAULT_TIMEOUT_MS);
 
@@ -38,19 +38,20 @@ export class CampusOpsApiClient {
     if (init.body !== undefined) requestInit.body = JSON.stringify(init.body);
 
     let response: Response;
+    let responseText: string;
     try {
       response = await fetch(`${this.config.baseUrl}${init.path}`, requestInit);
+      responseText = await response.text();
     } catch (error) {
       if (error instanceof Error && error.name === 'AbortError') throw new TransportTimeoutError();
-      throw error;
+      throw new TransportError();
     } finally {
       clearTimeout(timeout);
     }
 
     let parsedBody: unknown;
     try {
-      const text = await response.text();
-      parsedBody = text.length > 0 ? JSON.parse(text) : null;
+      parsedBody = responseText.length > 0 ? JSON.parse(responseText) : null;
     } catch {
       if (!response.ok) throw new HttpStatusError(response.status, null);
       throw new ContractError('Response body is not valid JSON');

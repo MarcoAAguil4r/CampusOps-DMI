@@ -1,5 +1,5 @@
 import type { IncidentCategory } from '../campusops/contracts';
-import type { Incident } from '../domain/incidents';
+import { IncidentDomainMappingError, type Incident } from '../domain/incidents';
 import type { IncidentRepository, NewRemoteIncidentInput } from '../domain/ports/IncidentRepository';
 import { parseRemoteResource } from '../course-evaluation';
 import { ContractError } from './httpErrors';
@@ -20,19 +20,21 @@ function isIncidentCategory(value: unknown): value is IncidentCategory {
 }
 
 function toDomainIncident(dto: { id: string; status: string; payload: Readonly<Record<string, unknown>> | null }): Incident {
-  if (dto.payload === null) throw new ContractError('Incident payload must not be null for a resolved incident');
+  if (dto.payload === null) {
+    throw new IncidentDomainMappingError('A valid remote resource has no payload to map to an incident');
+  }
 
   const { category, description, location } = dto.payload;
-  if (!isIncidentCategory(category)) throw new ContractError('Unknown incident category in remote payload');
+  if (!isIncidentCategory(category)) throw new IncidentDomainMappingError('Unknown incident category in remote payload');
   if (typeof description !== 'string' || description.trim().length === 0) {
-    throw new ContractError('Incident description missing in remote payload');
+    throw new IncidentDomainMappingError('Incident description missing in remote payload');
   }
   if (typeof location !== 'string' || location.trim().length === 0) {
-    throw new ContractError('Incident location missing in remote payload');
+    throw new IncidentDomainMappingError('Incident location missing in remote payload');
   }
 
   const validStatuses = ['open', 'assigned', 'in_progress', 'resolved', 'closed'];
-  if (!validStatuses.includes(dto.status)) throw new ContractError('Unknown incident status in remote payload');
+  if (!validStatuses.includes(dto.status)) throw new IncidentDomainMappingError('Unknown incident status in remote payload');
 
   return {
     id: dto.id,
@@ -70,11 +72,13 @@ export class RemoteIncidentRepository implements IncidentRepository {
   }
 
   async create(input: NewRemoteIncidentInput): Promise<Incident> {
-    const idempotencyKey = `create-${input.category}-${Date.now()}-${Math.random().toString(36).slice(2, 10)}`;
+    const { idempotencyKey, ...payload } = input;
+    if (idempotencyKey.trim().length === 0) throw new ContractError('Creation requires a non-empty idempotency key');
+
     const raw = await this.client.request({
       method: 'POST',
       path: '/v1/incidents',
-      body: input,
+      body: payload,
       idempotencyKey,
     });
 

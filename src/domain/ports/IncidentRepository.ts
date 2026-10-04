@@ -5,6 +5,7 @@ export type NewRemoteIncidentInput = Readonly<{
   category: IncidentCategory;
   description: string;
   location: string;
+  idempotencyKey: string;
 }>;
 
 export interface IncidentRepository {

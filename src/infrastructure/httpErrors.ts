@@ -17,7 +17,14 @@ export class HttpStatusError extends Error {
   }
 }
 
-export class TransportTimeoutError extends Error {
+export class TransportError extends Error {
+  public constructor(message = 'Request failed before receiving a response') {
+    super(message);
+    this.name = 'TransportError';
+  }
+}
+
+export class TransportTimeoutError extends TransportError {
   public constructor(message = 'Request timed out before receiving a response') {
     super(message);
     this.name = 'TransportTimeoutError';

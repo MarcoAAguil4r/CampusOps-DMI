@@ -53,7 +53,8 @@ La capa cliente debe distinguir estos resultados para que la UI pueda recuperars
 | Categoría | Ejemplo | Tratamiento |
 |---|---|---|
 | Error de contrato | JSON no parseable, sobre inválido o campo requerido con tipo incorrecto | Rechazar la respuesta; no construir ni persistir un recurso parcial. |
+| Datos remotos insuficientes para el dominio | Un DTO válido con `payload: null` | El parser conserva el recurso válido; el repositorio no inventa un `Incident` y devuelve `IncidentDomainMappingError`, distinto de `ContractError`. |
 | Error HTTP | `401`, `403`, `404`, `409`, `422`, `429` o `500` | Conservar el estado HTTP y, si existe, un código seguro del servidor; no exponer el cuerpo crudo ni datos sensibles en logs. |
-| Timeout o conexión | El servidor es lento, la solicitud se aborta o no hay conexión | Representar como error de transporte, distinto de un `500`; no asumir que una escritura no se ejecutó si se perdió la respuesta. |
+| Timeout o conexión | El servidor es lento, la solicitud se aborta o no hay conexión | Representar como `TransportTimeoutError` o `TransportError`, distintos de un `500`; no exponer el mensaje crudo de red ni asumir que una escritura no se ejecutó si se perdió la respuesta. |
 
 El backend didáctico ofrece respuestas controladas mediante `X-Course-Scenario`, incluidas `nullable`, `malformed`, `server_error`, `rate_limited` y `slow`. Las pruebas deben usar estos escenarios o dobles deterministas, no depender de Internet público. Los logs siguen las reglas de sanitización de las semanas anteriores.

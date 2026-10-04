@@ -17,6 +17,13 @@ export type NewIncident = Readonly<{
   location: IncidentLocation;
 }>;
 
+export class IncidentDomainMappingError extends Error {
+  public constructor(message: string) {
+    super(message);
+    this.name = 'IncidentDomainMappingError';
+  }
+}
+
 const allowedTransitions: Readonly<Record<IncidentStatus, readonly IncidentStatus[]>> = {
   open: ['assigned'],
   assigned: ['in_progress'],
