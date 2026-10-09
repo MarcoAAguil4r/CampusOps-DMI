@@ -1,0 +1,16 @@
+stateDiagram-v2
+    [*] --> Anonymous
+    note right of Anonymous
+        Login is established by the authentication adapter.
+        The refresh coordinator starts with the request's session generation.
+    end note
+    Anonymous --> Authenticated: request401 with generation
+    Authenticated --> Refreshing: first 401 for active generation
+    Refreshing --> Refreshing: concurrent 401 / join same refresh
+    Refreshing --> Authenticated: refreshSucceeded with newer generation and token
+    Authenticated --> Authenticated: retry each waiting request once
+    Refreshing --> Anonymous: refreshFailed
+    Authenticated --> Anonymous: retried request receives another 401
+    Refreshing --> Anonymous: logout / clear pending requests
+    Authenticated --> Anonymous: logout / clear session
+    Anonymous --> Anonymous: ignore stale refresh result after logout

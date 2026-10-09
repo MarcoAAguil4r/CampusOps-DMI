@@ -7,6 +7,7 @@ import type {
   SyncRecord,
 } from './contracts';
 import type { IncidentLocation } from '../campusops/contracts';
+import { coordinateSessionRefresh } from '../application/SessionRefreshCoordinator';
 
 function pending(name: string): never {
   throw new Error(`${name} must be implemented in the assigned week`);
@@ -79,14 +80,8 @@ function isRecord(value: unknown): value is Record<string, unknown> {
   return prototype === Object.prototype || prototype === null;
 }
 
-export function coordinateRefresh(_events: readonly AuthEvent[]): Readonly<{
-  status: 'anonymous' | 'authenticated';
-  activeGeneration: number | null;
-  refreshCalls: number;
-  retriedRequestIds: readonly string[];
-  persistedToken: string | null;
-}> {
-  return pending('coordinateRefresh');
+export function coordinateRefresh(events: readonly AuthEvent[]) {
+  return coordinateSessionRefresh(events);
 }
 
 export function resolveSync(
