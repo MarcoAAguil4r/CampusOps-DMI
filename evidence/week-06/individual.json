@@ -27,7 +27,7 @@
     },
     {
       "studentId": "3522110617",
-      "commitShas": ["a8424aac11ca08e122845ea0701864b8a4e9da26"],
+      "commitShas": ["b9a07a60b80603e73729363aa7d7ea946073afa1"],
       "files": ["reports/week-06/auth-tests.json", "reports/week-06/concurrency.json", "evidence/week-06/engineering.json", "evidence/week-06/individual.json"],
       "tests": ["npm.cmd run typecheck", "npm.cmd run lint", "npm.cmd run backend:self-test", "npm.cmd test -- --runInBand course-tests/public/week-06.test.ts", "npm.cmd test -- --runInBand src/domain/authorization.test.ts src/application/IncidentAuthorizationService.test.ts src/application/IncidentApplication.authorization.test.ts"],
       "reviews": ["Reviewed the integrated Week 6 SHA, existing public and authorization coverage, evidence contract, evaluator schema, and the audit result before consolidating these uncommitted review artifacts."],
