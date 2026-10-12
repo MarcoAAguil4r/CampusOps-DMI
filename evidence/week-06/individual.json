@@ -1,0 +1,40 @@
+{
+  "schemaVersion": 1,
+  "week": 6,
+  "teamId": "E01",
+  "members": [
+    {
+      "studentId": "3523110229",
+      "commitShas": ["950fd82dfd4f065f555407151c5df07de9c762b6"],
+      "files": ["src/application/SessionRefreshCoordinator.ts", "src/domain/ports/SessionAuthEvent.ts", "src/course-evaluation/index.ts", "course-tests/public/week-06.test.ts", "docs/session-state-machine.mmd"],
+      "tests": ["course-tests/public/week-06.test.ts"],
+      "reviews": ["David verified the authored refresh commit and ran the public Week 6 concurrency suite against the integrated SHA."],
+      "prediction": "Concurrent 401 events for one generation should share one refresh, retry each request only once, and leave no token when refresh fails or logout invalidates it.",
+      "command": "npm.cmd test -- --runInBand course-tests/public/week-06.test.ts",
+      "observedResult": "PASS: 1 suite and 7 tests; concurrent refresh, retry limit, stale generation, invalid refresh and logout cases completed as expected.",
+      "explanation": "Marco authored the secure session-refresh coordination identified by the commit's author metadata. The reviewed public scenarios establish single-flight refresh behavior and fail-closed cleanup without attributing authorization or evidence consolidation work to him."
+    },
+    {
+      "studentId": "3523110484",
+      "commitShas": ["72ca6a844b741d1baebd1e1c6008399bdd146e14"],
+      "files": ["src/domain/authorization.ts", "src/application/IncidentAuthorizationService.ts", "src/application/IncidentApplication.ts", "src/domain/authorization.test.ts", "src/application/IncidentAuthorizationService.test.ts", "src/application/IncidentApplication.authorization.test.ts"],
+      "tests": ["src/domain/authorization.test.ts", "src/application/IncidentAuthorizationService.test.ts", "src/application/IncidentApplication.authorization.test.ts"],
+      "reviews": ["David verified the authorization commit and executed the three focused authorization suites against the integrated SHA."],
+      "prediction": "Permissions should be checked against the current role and incident assignment before mutation; a reassigned technician must lose access and only a reporter may create an incident.",
+      "command": "npm.cmd test -- --runInBand src/domain/authorization.test.ts src/application/IncidentAuthorizationService.test.ts src/application/IncidentApplication.authorization.test.ts",
+      "observedResult": "PASS: 3 suites and 26 tests; role restrictions, reassignment denial, coordinator actions, identity alignment and pre-repository protection passed.",
+      "explanation": "Dulce authored the profile authorization gate and its application integration. The reviewed test run confirms the profile rules without attributing the refresh implementation or evidence consolidation work to her."
+    },
+    {
+      "studentId": "3522110617",
+      "commitShas": ["a8424aac11ca08e122845ea0701864b8a4e9da26"],
+      "files": ["reports/week-06/auth-tests.json", "reports/week-06/concurrency.json", "evidence/week-06/engineering.json", "evidence/week-06/individual.json"],
+      "tests": ["npm.cmd run typecheck", "npm.cmd run lint", "npm.cmd run backend:self-test", "npm.cmd test -- --runInBand course-tests/public/week-06.test.ts", "npm.cmd test -- --runInBand src/domain/authorization.test.ts src/application/IncidentAuthorizationService.test.ts src/application/IncidentApplication.authorization.test.ts"],
+      "reviews": ["Reviewed the integrated Week 6 SHA, existing public and authorization coverage, evidence contract, evaluator schema, and the audit result before consolidating these uncommitted review artifacts."],
+      "prediction": "The integrated refresh and authorization protections should remain independently reproducible: session failures must clear state, while forbidden actions must be rejected before repository mutation.",
+      "command": "npm.cmd test -- --runInBand course-tests/public/week-06.test.ts src/domain/authorization.test.ts src/application/IncidentAuthorizationService.test.ts src/application/IncidentApplication.authorization.test.ts",
+      "observedResult": "PASS in the executed focused runs: 7/7 public refresh tests and 26/26 authorization tests. The listed evidence files remain uncommitted for David's manual review and commit.",
+      "explanation": "David's contribution is integration QA and evidence consolidation based on the verified merge SHA. The SHA is the reviewed integration point, not a claim that David authored Marco's refresh code or Dulce's authorization code; the four listed files are pending David's manual commit."
+    }
+  ]
+}

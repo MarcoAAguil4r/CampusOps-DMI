@@ -1,0 +1,29 @@
+{
+  "schemaVersion": 1,
+  "week": 6,
+  "commitSha": "a8424aac11ca08e122845ea0701864b8a4e9da26",
+  "generatedAt": "2026-10-11T23:05:45.5524982-06:00",
+  "checks": [
+    {
+      "id": "concurrent-401-single-refresh-and-single-retry",
+      "status": "pass",
+      "scenarioType": "nominal",
+      "command": "npm.cmd test -- --runInBand course-tests/public/week-06.test.ts",
+      "evidence": "PASS: 7 tests. Three concurrent 401 requests produced refreshCalls=1 and each request ID was retried once with the refreshed token."
+    },
+    {
+      "id": "old-generation-401-uses-current-token",
+      "status": "pass",
+      "scenarioType": "boundary",
+      "command": "npm.cmd test -- --runInBand course-tests/public/week-06.test.ts",
+      "evidence": "PASS: a 401 tagged with generation 0 after generation 1 succeeds is retried with the persisted generation-1 token without a second refresh."
+    },
+    {
+      "id": "refresh-failure-invalid-response-retry-401-and-logout-fail-closed",
+      "status": "pass",
+      "scenarioType": "failure",
+      "command": "npm.cmd test -- --runInBand course-tests/public/week-06.test.ts",
+      "evidence": "PASS: failed or invalid refresh, a second 401 after retry, logout during refresh, and the late refresh success after logout all end anonymous with persistedToken=null and no unintended retries."
+    }
+  ]
+}
