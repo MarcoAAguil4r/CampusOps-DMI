@@ -1,0 +1,65 @@
+{
+  "schemaVersion": 1,
+  "week": 6,
+  "mode": "evidence",
+  "commitSha": "a8424aac11ca08e122845ea0701864b8a4e9da26",
+  "evaluatedAt": "2026-10-12T05:10:25.014844+00:00",
+  "status": "fail",
+  "checks": [
+    {
+      "id": "base_files",
+      "status": "pass",
+      "detail": "missing=[]"
+    },
+    {
+      "id": "react_native_profile",
+      "status": "pass",
+      "detail": "missing packages=[]"
+    },
+    {
+      "id": "toolchain_scripts",
+      "status": "pass",
+      "detail": "missing scripts=[]"
+    },
+    {
+      "id": "workflow_integrity",
+      "status": "pass",
+      "detail": "bypass markers=[]"
+    },
+    {
+      "id": "secret_scan",
+      "status": "pass",
+      "detail": "hits=[]"
+    },
+    {
+      "id": "required_evidence",
+      "status": "pass",
+      "detail": "missing/empty=[]"
+    },
+    {
+      "id": "schema:reports/week-06/auth-tests.json",
+      "status": "pass",
+      "detail": "3 checks indexed, 2 boundary/failure; report evaluates HEAD"
+    },
+    {
+      "id": "schema:reports/week-06/concurrency.json",
+      "status": "pass",
+      "detail": "3 checks indexed, 2 boundary/failure; report evaluates HEAD"
+    },
+    {
+      "id": "schema:evidence/week-06/engineering.json",
+      "status": "pass",
+      "detail": "decision evidence is substantive and reproducible; report evaluates HEAD"
+    },
+    {
+      "id": "schema:evidence/week-06/individual.json",
+      "status": "pass",
+      "detail": "three individual evidence records found"
+    },
+    {
+      "id": "frozen_sha",
+      "status": "fail",
+      "detail": "tag=week-06-final tagSha=fatal: ambiguous argument 'week-06-final': unknown revision or path not in the working tree.\nUse '--' to separate paths from revisions, like this:\n'git <command> [<revision>...] -- [<file>...]' head=a8424aac11ca08e122845ea0701864b8a4e9da26"
+    }
+  ]
+}

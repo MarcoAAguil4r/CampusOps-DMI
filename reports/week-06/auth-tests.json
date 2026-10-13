@@ -1,0 +1,29 @@
+{
+  "schemaVersion": 1,
+  "week": 6,
+  "commitSha": "a8424aac11ca08e122845ea0701864b8a4e9da26",
+  "generatedAt": "2026-10-11T23:05:45.5524982-06:00",
+  "checks": [
+    {
+      "id": "authorization-profile-and-action-suite",
+      "status": "pass",
+      "scenarioType": "nominal",
+      "command": "npm.cmd test -- --runInBand src/domain/authorization.test.ts src/application/IncidentAuthorizationService.test.ts src/application/IncidentApplication.authorization.test.ts",
+      "evidence": "PASS: 3 suites and 26 tests. Verified reporter creation, assigned-technician start/resolve, coordinator-only actions, identity/role alignment, and authorization before repository creation."
+    },
+    {
+      "id": "authorization-reassigned-technician-denied",
+      "status": "pass",
+      "scenarioType": "boundary",
+      "command": "npm.cmd test -- --runInBand src/domain/authorization.test.ts src/application/IncidentAuthorizationService.test.ts src/application/IncidentApplication.authorization.test.ts",
+      "evidence": "PASS: the displaced technician cases reject start after reassignment, while the assigned technician remains allowed."
+    },
+    {
+      "id": "authorization-unauthorized-create-blocked-before-repository",
+      "status": "pass",
+      "scenarioType": "failure",
+      "command": "npm.cmd test -- --runInBand src/domain/authorization.test.ts src/application/IncidentAuthorizationService.test.ts src/application/IncidentApplication.authorization.test.ts",
+      "evidence": "PASS: a technician create attempt throws IncidentAuthorizationError and RecordingRepository.createCalls remains 0."
+    }
+  ]
+}

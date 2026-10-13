@@ -1,0 +1,30 @@
+{
+  "schemaVersion": 1,
+  "week": 6,
+  "commitSha": "a8424aac11ca08e122845ea0701864b8a4e9da26",
+  "decision": "The Week 6 integration QA records authorization and session refresh as separate executable checks, then verifies their fail-closed boundary scenarios rather than adding a duplicate orchestration layer. This preserves the responsibilities of the refresh coordinator and the authorization service while making their observable protections reproducible.",
+  "alternatives": [
+    "Add a new integration implementation that couples profile authorization to SessionRefreshCoordinator and test that new layer.",
+    "Reuse the existing focused authorization and public refresh suites, recording only executed nominal, boundary, and failure observations.",
+    "Rely only on the public Week 6 suite and omit the application-level authorization checks."
+  ],
+  "tradeoff": "Focused suites give precise ownership and deterministic diagnosis for session and permission failures, but do not simulate a networked end-to-end UI flow. Adding a coupling layer solely for QA would broaden the product surface, duplicate tested behavior, and risk changing the work already integrated from the other contributors.",
+  "requirementIds": ["AC-01", "AC-02", "AC-03", "AC-04", "AC-05"],
+  "verification": [
+    {
+      "command": "npm.cmd test -- --runInBand course-tests/public/week-06.test.ts",
+      "result": "pass",
+      "evidence": "7/7 public refresh tests passed, including concurrent 401 coalescing, one retry, failed/invalid refresh, stale generation, and logout invalidation."
+    },
+    {
+      "command": "npm.cmd test -- --runInBand src/domain/authorization.test.ts src/application/IncidentAuthorizationService.test.ts src/application/IncidentApplication.authorization.test.ts",
+      "result": "pass",
+      "evidence": "3/3 suites and 26/26 authorization tests passed; denied operations were asserted before repository mutation."
+    },
+    {
+      "command": "npm.cmd run backend:self-test",
+      "result": "pass",
+      "evidence": "Controlled backend self-test passed for roles, reassignment conflict, lost response, idempotency, evidence, and geocoding."
+    }
+  ]
+}
