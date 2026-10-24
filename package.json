@@ -12,7 +12,6 @@
     "ios": "expo run:ios",
     "backend": "node course-backend/server.mjs",
     "backend:self-test": "node course-backend/self-test.mjs",
-    "verify": "npm run typecheck && npm run lint && npm run test:smoke",
     "typecheck": "tsc --noEmit",
     "lint": "eslint .",
     "test": "jest --no-watchman --cacheDirectory .jest-cache",

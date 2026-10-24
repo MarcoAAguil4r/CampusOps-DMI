@@ -1,6 +1,6 @@
 # CampusOps — starter público de Desarrollo Móvil Integral
 
-Base técnica: Expo SDK 57, React Native 0.86, React 19, TypeScript estricto, SQLite local con `expo-sqlite` y Node.js 22. Este repositorio es el punto de partida del equipo; no contiene pruebas ocultas, respuestas, secretos ni lógica privada de calificación.
+Base técnica: Expo SDK 57, React Native 0.86, React 19, TypeScript estricto y Node.js 22. Este repositorio es el punto de partida del equipo; no contiene pruebas ocultas, respuestas, secretos ni lógica privada de calificación.
 
 Lee `docs/CAMPUSOPS.md` (caso y alcance) y `docs/CAMPUSOPS_API.md` (contratos y variantes públicas). La pantalla inicial sólo comprueba la línea base; no implementa los flujos que el equipo debe construir. Los adaptadores en `src/course-evaluation/` permanecen intencionalmente pendientes para sus semanas: la suite completa no tiene que pasar al recibir el starter; sí debe pasar `make feedback`.
 
@@ -18,20 +18,6 @@ El nombre es provisional. Se conservan slug e identificadores nativos existentes
 ```bash
 nvm use
 make setup
-npm run verify
-```
-
-`npm run verify` ejecuta el chequeo de tipos, ESLint y la prueba smoke. Para
-ejecutar todas las suites Jest disponibles en el repositorio:
-
-```bash
-npm test
-```
-
-La retroalimentación completa, que además ejecuta auditoría crítica y genera
-el bundle Android de Expo, se ejecuta con:
-
-```bash
 make feedback
 ```
 
