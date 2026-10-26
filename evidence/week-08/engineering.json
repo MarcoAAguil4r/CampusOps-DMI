@@ -1,0 +1,40 @@
+{
+  "schemaVersion": 1,
+  "week": 8,
+  "commitSha": "59088345808b8df508f7d3fd43823c340031a7af",
+  "decision": "La solución integrada conserva incidencias y operaciones pendientes en SQLite versionado, y sincroniza una operación durable únicamente mediante PendingOperationSyncService. La cola no elimina una operación hasta recibir confirmed; para error, timeout o conflicto conserva la intención local. La integración añade una recuperación mínima para la carrera de dos encolados iguales: después de un INSERT fallido se vuelve a leer operationId y sólo se reutiliza si todo el contenido coincide.",
+  "alternatives": [
+    "Persistir incidencias y reintentos únicamente en memoria y reconstruirlos desde la interfaz al reiniciar la aplicación.",
+    "Guardar incidencias y pending_operations en SQLite con migraciones transaccionales, foreign key e identidad estable de operación.",
+    "Eliminar la operación local al primer intento de transporte y pedir al servidor que reconstruya cualquier estado pendiente."
+  ],
+  "tradeoff": "La persistencia SQLite incrementa el código de migración y las pruebas de recuperación, pero evita pérdidas al reiniciar y permite conservar conflictos sin sobrescribir la reasignación remota. La relectura posterior a un INSERT fallido mantiene la idempotencia en una carrera sin introducir un coordinador global; depende de que la base aplique la unicidad de operation_id. Las pruebas focalizadas usan SQLite en memoria y transporte simulado: no demuestran un cierre físico de campusops.db ni sincronización contra un backend remoto. AC-01 y AC-05 siguen parciales por falta de tag final y tres evidencias individuales completas; las vulnerabilidades permanecen pendientes de tratamiento coordinado.",
+  "requirementIds": ["AC-01", "AC-02", "AC-03", "AC-04", "AC-05"],
+  "verification": [
+    {
+      "command": "npm.cmd ci",
+      "result": "pass (manual del integrante)",
+      "evidence": "Ejecución manual en Windows CMD: se instalaron 1,011 paquetes. npm reportó 11 vulnerabilidades, 10 altas y 1 crítica; no se modificaron dependencias ni se ejecutó npm audit fix."
+    },
+    {
+      "command": "npm.cmd test -- --ci --runInBand course-tests/public/week-08.test.ts src/application/Week08Integration.test.ts src/infrastructure/CampusOpsDatabaseMigrations.test.ts src/infrastructure/CampusOpsDatabaseSqlite.test.ts src/infrastructure/SQLiteIncidentRepository.test.ts src/infrastructure/SQLitePendingOperationsRepository.test.ts",
+      "result": "pass (manual del integrante)",
+      "evidence": "Ejecución manual en Windows CMD: 6 suites y 18 pruebas aprobadas, 0 fallos. Cubre migraciones y rollback inyectado, repositorios, cola durable, conflicto, confirmación y merge; reapertura y transporte son simulados. Codex no pudo reproducir Jest por EPERM realpath de su sandbox."
+    },
+    {
+      "command": "npm.cmd run typecheck && npm.cmd run lint",
+      "result": "pass (reproducido por Codex y confirmado manualmente)",
+      "evidence": "Codex ejecutó typecheck sin errores y lint con código 0; el integrante confirmó manualmente el mismo resultado, con una advertencia preexistente para e no utilizada en course-tests/team/week-03-authorization.test.ts:79."
+    },
+    {
+      "command": "py -3 tools\\course_public_evaluator.py --week 8 --mode public --execute-toolchain",
+      "result": "fail (manual del integrante)",
+      "evidence": "Las tres pruebas públicas y los esquemas de migration-tests.json y engineering.json aprobaron; fallaron individual.json por no contener exactamente tres integrantes y audit:ci por 11 vulnerabilidades."
+    },
+    {
+      "command": "py -3 tools\\course_public_evaluator.py --week 8 --mode verify --execute-toolchain",
+      "result": "fail (manual del integrante)",
+      "evidence": "Typecheck, lint, smoke 3/3 y backend self-test aprobaron; audit:ci falló por las mismas 11 vulnerabilidades pendientes."
+    }
+  ]
+}

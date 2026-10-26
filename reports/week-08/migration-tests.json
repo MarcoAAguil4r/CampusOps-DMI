@@ -1,0 +1,71 @@
+{
+  "schemaVersion": 1,
+  "week": 8,
+  "commitSha": "59088345808b8df508f7d3fd43823c340031a7af",
+  "generatedAt": "2026-10-26T00:29:34.7561938-06:00",
+  "checks": [
+    {
+      "id": "restart-and-persistence",
+      "status": "pass",
+      "scenarioType": "nominal",
+      "command": "npm test -- --ci --runInBand course-tests/public/week-08.test.ts src/application/Week08Integration.test.ts src/infrastructure/CampusOpsDatabaseMigrations.test.ts src/infrastructure/CampusOpsDatabaseSqlite.test.ts src/infrastructure/SQLiteIncidentRepository.test.ts src/infrastructure/SQLitePendingOperationsRepository.test.ts",
+      "evidence": "PASS manual del integrante: 6 suites y 18 pruebas, 0 fallos. SQLiteIncidentRepository.test.ts recupera incidencias desde una nueva instancia y SQLitePendingOperationsRepository.test.ts recupera operationId y payload. Es reapertura simulada sobre la misma base en memoria, no cierre y reapertura de campusops.db persistente."
+    },
+    {
+      "id": "valid-migration-preserves-data",
+      "status": "pass",
+      "scenarioType": "boundary",
+      "command": "npm.cmd test -- --ci --runInBand src/infrastructure/CampusOpsDatabaseMigrations.test.ts src/infrastructure/CampusOpsDatabaseSqlite.test.ts",
+      "evidence": "PASS manual del integrante dentro de 6 suites/18 pruebas: las migraciones 0→2 y 1→2 conservan la incidencia existente; CampusOpsDatabaseSqlite.test.ts comprueba la relación incidents/pending_operations mediante clave foránea."
+    },
+    {
+      "id": "failed-migration-rollback-and-recovery",
+      "status": "pass",
+      "scenarioType": "failure",
+      "command": "npm.cmd test -- --ci --runInBand src/infrastructure/CampusOpsDatabaseMigrations.test.ts src/infrastructure/CampusOpsDatabaseSqlite.test.ts",
+      "evidence": "PASS manual del integrante dentro de 6 suites/18 pruebas: se inyecta un fallo al crear el índice y se verifica rollback de tabla, user_version y fila existente. No hay cierre físico ni reintento posterior explícito en el mismo caso."
+    },
+    {
+      "id": "offline-start-remote-reassignment-conflict",
+      "status": "pass",
+      "scenarioType": "failure",
+      "command": "npm.cmd test -- --ci --runInBand course-tests/public/week-08.test.ts src/infrastructure/SQLitePendingOperationsRepository.test.ts",
+      "evidence": "PASS manual del integrante dentro de 6 suites/18 pruebas: la prueba pública detecta conflicto en work sin mutar base/local/remoto; la suite de cola conserva la operación en conflict. Actor remoto y transporte son dobles de prueba."
+    },
+    {
+      "id": "independent-json-field-merge",
+      "status": "pass",
+      "scenarioType": "boundary",
+      "command": "npm.cmd test -- --ci --runInBand course-tests/public/week-08.test.ts src/application/Week08Integration.test.ts",
+      "evidence": "PASS manual del integrante dentro de 6 suites/18 pruebas: resolveSync combina title local y priority remoto y no muta entradas. La prueba pública cubre un conflicto de campo; el orden de múltiples conflictos depende de sort() y no tuvo un caso automatizado separado."
+    },
+    {
+      "id": "retry-idempotency-and-confirmed-removal",
+      "status": "pass",
+      "scenarioType": "failure",
+      "command": "npm.cmd test -- --ci --runInBand src/infrastructure/SQLitePendingOperationsRepository.test.ts src/application/Week08Integration.test.ts",
+      "evidence": "PASS manual del integrante dentro de 6 suites/18 pruebas: replay igual, rechazo de contenido distinto, carrera de dos encolados iguales, timeout, error, conflicto y eliminación exclusiva tras confirmed. El transporte sigue simulado."
+    },
+    {
+      "id": "installation-typecheck-and-lint",
+      "status": "pass",
+      "scenarioType": "nominal",
+      "command": "npm ci && npm run typecheck && npm run lint",
+      "evidence": "Resultados manuales del integrante: npm ci instaló 1,011 paquetes; typecheck aprobó sin errores; lint aprobó sin errores con una advertencia preexistente de variable e no utilizada. Codex reprodujo typecheck y lint con código 0, pero no npm ci en esta sesión."
+    },
+    {
+      "id": "public-evaluator-week-08",
+      "status": "fail",
+      "scenarioType": "failure",
+      "command": "py -3 tools\\course_public_evaluator.py --week 8 --mode public --execute-toolchain",
+      "evidence": "Resultado manual del integrante: las comprobaciones estructurales, migration-tests.json, engineering.json y las 3 pruebas públicas aprobaron. El modo falló por individual.json sin exactamente tres integrantes y por npm run audit:ci con 11 vulnerabilidades (10 altas y 1 crítica)."
+    },
+    {
+      "id": "verify-evaluator-week-08",
+      "status": "fail",
+      "scenarioType": "failure",
+      "command": "py -3 tools\\course_public_evaluator.py --week 8 --mode verify --execute-toolchain",
+      "evidence": "Resultado manual del integrante: typecheck, lint, smoke 3/3 y backend self-test aprobaron. El modo falló exclusivamente por npm run audit:ci con las 11 vulnerabilidades conocidas."
+    }
+  ]
+}

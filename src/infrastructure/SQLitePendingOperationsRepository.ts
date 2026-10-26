@@ -97,18 +97,29 @@ export class SQLitePendingOperationsRepository {
     const createdAt = new Date().toISOString();
     const payloadJson = JSON.stringify(input.payload);
 
-    await this.database.runAsync(
-      `INSERT INTO pending_operations (
-         operation_id, incident_id, actor_id, base_version, action, payload_json, status, created_at
-       ) VALUES (?, ?, ?, ?, ?, ?, 'pending', ?)`,
-      input.operationId,
-      input.incidentId,
-      input.actorId,
-      input.baseVersion,
-      input.action,
-      payloadJson,
-      createdAt,
-    );
+    try {
+      await this.database.runAsync(
+        `INSERT INTO pending_operations (
+           operation_id, incident_id, actor_id, base_version, action, payload_json, status, created_at
+         ) VALUES (?, ?, ?, ?, ?, ?, 'pending', ?)`,
+        input.operationId,
+        input.incidentId,
+        input.actorId,
+        input.baseVersion,
+        input.action,
+        payloadJson,
+        createdAt,
+      );
+    } catch (error) {
+      // Two callers can both observe an empty queue before either INSERT runs.
+      // Re-read after a failed insert so a same-content replay remains idempotent.
+      const racedOperation = await this.findById(input.operationId);
+      if (racedOperation) {
+        if (sameOperationContent(racedOperation, input)) return racedOperation;
+        throw new PendingOperationIdempotencyError(input.operationId);
+      }
+      throw error;
+    }
 
     const stored = await this.findById(input.operationId);
     if (!stored) throw new Error('The pending operation was not persisted');
