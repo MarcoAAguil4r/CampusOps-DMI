@@ -33,6 +33,15 @@ type StoredPendingOperation = Readonly<{
   created_at: string;
 }>;
 
+export class PendingOperationIdempotencyError extends Error {
+  public constructor(operationId: string) {
+    super(
+      `operationId "${operationId}" already exists with different content; refusing to mutate the durable queue entry`,
+    );
+    this.name = 'PendingOperationIdempotencyError';
+  }
+}
+
 function parseRow(row: StoredPendingOperation): PendingOperation {
   const payload = JSON.parse(row.payload_json) as Record<string, unknown>;
   return {
@@ -47,6 +56,16 @@ function parseRow(row: StoredPendingOperation): PendingOperation {
   };
 }
 
+function sameOperationContent(stored: PendingOperation, input: NewPendingOperationInput): boolean {
+  return (
+    stored.incidentId === input.incidentId &&
+    stored.actorId === input.actorId &&
+    stored.baseVersion === input.baseVersion &&
+    stored.action === input.action &&
+    JSON.stringify(stored.payload) === JSON.stringify(input.payload)
+  );
+}
+
 /**
  * Durable offline change queue on pending_operations (schema v2).
  * Survives app restart. Remove only after server confirmation.
@@ -54,12 +73,25 @@ function parseRow(row: StoredPendingOperation): PendingOperation {
 export class SQLitePendingOperationsRepository {
   public constructor(private readonly database: SQLiteDatabasePort) {}
 
+  /**
+   * Enqueue with stable operationId.
+   * - Same id + same content → return existing (idempotent retry).
+   * - Same id + different content → reject (do not mutate).
+   */
   public async enqueue(input: NewPendingOperationInput): Promise<PendingOperation> {
     if (!input.operationId.trim()) {
       throw new Error('operationId is required for a durable pending operation');
     }
     if (!input.incidentId.trim()) {
       throw new Error('incidentId is required for a durable pending operation');
+    }
+
+    const existing = await this.findById(input.operationId);
+    if (existing) {
+      if (sameOperationContent(existing, input)) {
+        return existing;
+      }
+      throw new PendingOperationIdempotencyError(input.operationId);
     }
 
     const createdAt = new Date().toISOString();
@@ -124,7 +156,10 @@ export class SQLitePendingOperationsRepository {
     }
   }
 
-  /** Remove only after the server confirmed the operation. */
+  /**
+   * Low-level delete. Prefer PendingOperationSyncService.syncOne so removal
+   * only happens after an explicit server confirmation.
+   */
   public async removeConfirmed(operationId: string): Promise<void> {
     await this.database.runAsync(`DELETE FROM pending_operations WHERE operation_id = ?`, operationId);
   }

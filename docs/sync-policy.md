@@ -22,11 +22,13 @@ Partiendo de una incidencia asignada a `technician-1`:
 
 Ambos alteran el campo agregado `work` de formas incompatibles. El resultado es `{ kind: 'conflict', fields: ['work'] }`. Se conserva la intención local en la cola durable (estado `conflict`) y no se sobrescribe automáticamente la asignación remota.
 
-## Identidad e idempotencia
+## Idempotencia al encolar
 
-Cada operación pendiente tiene un `operationId` estable. Al reintentar se reutiliza la **misma** identidad y el **mismo** payload.
+Si se repite el mismo `operationId` con el **mismo** contenido, se reutiliza la entrada existente. Si el contenido difiere, se rechaza (`PendingOperationIdempotencyError`) sin mutar la cola.
 
-`deduplicateOperations` recorre la lista en orden, conserva la **primera** aparición de cada `operationId` y omite repeticiones. No muta las entradas originales.
+## Integración de sync
+
+`PendingOperationSyncService.syncOne` envía la operación al transporte. Solo cuando el resultado es `confirmed` llama a `removeConfirmed`. Ante `error`, `timeout` o `conflict`, la operación permanece en la cola (en conflicto se marca `status = conflict`).
 
 ## Autorización
 
@@ -52,5 +54,4 @@ Solo la confirmación del servidor autoriza retirar la operación. Un conflicto 
 ## Vinculación con pruebas
 
 - `course-tests/public/week-08.test.ts` - `resolveSync` (merge, conflicto de campo, conflicto `work`) y `deduplicateOperations`.
-- `src/infrastructure/SQLitePendingOperationsRepository.test.ts` - persistencia tras “reabrir”, marca de conflicto sin borrar, borrado solo con `removeConfirmed`.
-
+- `src/infrastructure/SQLitePendingOperationsRepository.test.ts` - persistencia tras “reabrir”; `enqueue` idempotente (mismo contenido / contenido distinto); `PendingOperationSyncService` conserva la cola en timeout, error y conflicto y solo elimina tras `confirmed`.

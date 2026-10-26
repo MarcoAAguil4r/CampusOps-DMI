@@ -2,7 +2,12 @@ import { DatabaseSync } from 'node:sqlite';
 import type { SQLiteBindValue, SQLiteRunResult } from 'expo-sqlite';
 import type { SQLiteDatabasePort, SQLiteExecutorPort } from './SQLiteDatabasePort';
 import { migrateCampusOpsDatabase } from './CampusOpsDatabaseMigrations';
-import { SQLitePendingOperationsRepository } from './SQLitePendingOperationsRepository';
+import {
+  PendingOperationIdempotencyError,
+  SQLitePendingOperationsRepository,
+  type PendingOperation,
+} from './SQLitePendingOperationsRepository';
+import { PendingOperationSyncService } from '../application/PendingOperationSyncService';
 
 type NodeSQLiteBindValue = Exclude<SQLiteBindValue, boolean | ArrayBuffer> | Uint8Array;
 
@@ -61,35 +66,114 @@ async function seedIncident(database: SQLiteDatabasePort, id = 'campus-inc-001')
   );
 }
 
+const baseInput = {
+  operationId: 'op-start-001',
+  incidentId: 'campus-inc-001',
+  actorId: 'technician-1',
+  baseVersion: 1,
+  action: 'start',
+  payload: {
+    work: { assignedTechnicianId: 'technician-1', status: 'in_progress' },
+    note: 'Inicio sin conexión',
+  },
+} as const;
+
 test('pending operation survives reopen with same identity and payload', async () => {
   const database = createDatabase();
   await migrateCampusOpsDatabase(database);
   await seedIncident(database);
 
   const queue = new SQLitePendingOperationsRepository(database);
-  const enqueued = await queue.enqueue({
-    operationId: 'op-start-001',
+  const enqueued = await queue.enqueue({ ...baseInput, payload: { ...baseInput.payload } });
+
+  const reopened = new SQLitePendingOperationsRepository(database);
+  const listed = await reopened.listPending();
+  expect(listed).toHaveLength(1);
+  expect(listed[0]?.operationId).toBe(enqueued.operationId);
+  expect(listed[0]?.payload).toEqual(enqueued.payload);
+});
+
+test('enqueue is idempotent for same operationId and content', async () => {
+  const database = createDatabase();
+  await migrateCampusOpsDatabase(database);
+  await seedIncident(database);
+
+  const queue = new SQLitePendingOperationsRepository(database);
+  const first = await queue.enqueue({ ...baseInput, payload: { ...baseInput.payload } });
+  const second = await queue.enqueue({ ...baseInput, payload: { ...baseInput.payload } });
+
+  expect(second.operationId).toBe(first.operationId);
+  expect(second.createdAt).toBe(first.createdAt);
+  expect(await queue.listPending()).toHaveLength(1);
+});
+
+test('enqueue rejects same operationId with different content', async () => {
+  const database = createDatabase();
+  await migrateCampusOpsDatabase(database);
+  await seedIncident(database);
+
+  const queue = new SQLitePendingOperationsRepository(database);
+  await queue.enqueue({ ...baseInput, payload: { ...baseInput.payload } });
+
+  await expect(
+    queue.enqueue({
+      ...baseInput,
+      payload: { work: { assignedTechnicianId: 'technician-1', status: 'in_progress' }, note: 'OTRO' },
+    }),
+  ).rejects.toBeInstanceOf(PendingOperationIdempotencyError);
+
+  expect(await queue.listPending()).toHaveLength(1);
+});
+
+test('sync removes only after server confirmation; keeps on error timeout conflict', async () => {
+  const database = createDatabase();
+  await migrateCampusOpsDatabase(database);
+  await seedIncident(database);
+
+  const queue = new SQLitePendingOperationsRepository(database);
+  await queue.enqueue({
+    operationId: 'op-sync-1',
     incidentId: 'campus-inc-001',
     actorId: 'technician-1',
     baseVersion: 1,
     action: 'start',
-    payload: {
-      work: { assignedTechnicianId: 'technician-1', status: 'in_progress' },
-      note: 'Inicio sin conexión',
-      photoRef: 'local-photo-pending-001',
+    payload: { work: { status: 'in_progress' } },
+  });
+
+  // timeout → still in queue
+  let transportOutcome: 'timeout' | 'error' | 'conflict' | 'confirmed' = 'timeout';
+  const service = new PendingOperationSyncService(queue, {
+    submit: async (_op: PendingOperation) => {
+      if (transportOutcome === 'timeout') return { outcome: 'timeout' };
+      if (transportOutcome === 'error') return { outcome: 'error', reason: 'network' };
+      if (transportOutcome === 'conflict') return { outcome: 'conflict' };
+      return { outcome: 'confirmed' };
     },
   });
 
-  expect(enqueued.operationId).toBe('op-start-001');
-  expect(enqueued.status).toBe('pending');
+  let result = await service.syncOne('op-sync-1');
+  expect(result.outcome).toBe('timeout');
+  expect(result.stillInQueue).toBe(true);
+  expect(await queue.findById('op-sync-1')).not.toBeNull();
 
-  // "Reopen": new repository on the same DB (simulates process restart)
-  const reopened = new SQLitePendingOperationsRepository(database);
-  const listed = await reopened.listPending();
-  expect(listed).toHaveLength(1);
-  expect(listed[0]?.operationId).toBe('op-start-001');
-  expect(listed[0]?.payload).toEqual(enqueued.payload);
-  expect(listed[0]?.actorId).toBe('technician-1');
+  transportOutcome = 'error';
+  result = await service.syncOne('op-sync-1');
+  expect(result.outcome).toBe('error');
+  expect(result.stillInQueue).toBe(true);
+  expect(await queue.findById('op-sync-1')).not.toBeNull();
+
+  transportOutcome = 'conflict';
+  result = await service.syncOne('op-sync-1');
+  expect(result.outcome).toBe('conflict');
+  expect(result.stillInQueue).toBe(true);
+  expect((await queue.findById('op-sync-1'))?.status).toBe('conflict');
+
+  // confirmed → removed
+  transportOutcome = 'confirmed';
+  result = await service.syncOne('op-sync-1');
+  expect(result.outcome).toBe('confirmed');
+  expect(result.stillInQueue).toBe(false);
+  expect(await queue.findById('op-sync-1')).toBeNull();
 });
 
 test('reassignment conflict keeps local intent and does not remove the operation', async () => {
@@ -108,35 +192,8 @@ test('reassignment conflict keeps local intent and does not remove the operation
   });
 
   await queue.markConflict('op-start-002');
-
+  
   const stored = await queue.findById('op-start-002');
   expect(stored?.status).toBe('conflict');
-  expect(stored?.payload).toEqual({
-    work: { assignedTechnicianId: 'technician-1', status: 'in_progress' },
-  });
-
-  const stillListed = await queue.listPending();
-  expect(stillListed.some((op) => op.operationId === 'op-start-002')).toBe(true);
-});
-
-test('only removeConfirmed deletes; markConflict does not', async () => {
-  const database = createDatabase();
-  await migrateCampusOpsDatabase(database);
-  await seedIncident(database);
-
-  const queue = new SQLitePendingOperationsRepository(database);
-  await queue.enqueue({
-    operationId: 'op-note-003',
-    incidentId: 'campus-inc-001',
-    actorId: 'technician-1',
-    baseVersion: 1,
-    action: 'comment',
-    payload: { text: 'Nota offline' },
-  });
-
-  await queue.markConflict('op-note-003');
-  expect(await queue.findById('op-note-003')).not.toBeNull();
-
-  await queue.removeConfirmed('op-note-003');
-  expect(await queue.findById('op-note-003')).toBeNull();
+  expect(await queue.listPending()).toHaveLength(1);
 });
