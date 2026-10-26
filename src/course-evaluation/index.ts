@@ -84,18 +84,67 @@ export function coordinateRefresh(events: readonly AuthEvent[]) {
   return coordinateSessionRefresh(events);
 }
 
+function jsonEqual(a: unknown, b: unknown): boolean {
+  return JSON.stringify(a) === JSON.stringify(b);
+}
+
 export function resolveSync(
-  _base: SyncRecord,
-  _local: SyncRecord,
-  _remote: SyncRecord,
+  base: SyncRecord,
+  local: SyncRecord,
+  remote: SyncRecord,
 ): Readonly<{ kind: 'merged'; fields: JsonObject } | { kind: 'conflict'; fields: readonly string[] }> {
-  return pending('resolveSync');
+  const baseFields = base.fields;
+  const localFields = local.fields;
+  const remoteFields = remote.fields;
+
+  const keys = new Set([
+    ...Object.keys(baseFields),
+    ...Object.keys(localFields),
+    ...Object.keys(remoteFields),
+  ]);
+
+  const merged: Record<string, unknown> = {};
+  const conflicts: string[] = [];
+
+  for (const key of keys) {
+    const baseValue = baseFields[key];
+    const localValue = localFields[key];
+    const remoteValue = remoteFields[key];
+
+    const localChanged = !jsonEqual(localValue, baseValue);
+    const remoteChanged = !jsonEqual(remoteValue, baseValue);
+
+    if (localChanged && remoteChanged && !jsonEqual(localValue, remoteValue)) {
+      conflicts.push(key);
+      continue;
+    }
+
+    if (localChanged) {
+      merged[key] = localValue;
+    } else if (remoteChanged) {
+      merged[key] = remoteValue;
+    } else {
+      merged[key] = baseValue;
+    }
+  }
+  if (conflicts.length > 0) {
+    return { kind: 'conflict', fields: [...conflicts].sort() };
+  }
+  return { kind: 'merged', fields: merged };
 }
 
 export function deduplicateOperations<T extends Readonly<{ operationId: string }>>(
-  _operations: readonly T[],
+  operations: readonly T[],
 ): readonly T[] {
-  return pending('deduplicateOperations');
+  const seen = new Set<string>();
+  const result: T[] = [];
+
+  for (const operation of operations) {
+    if (seen.has(operation.operationId)) continue;
+    seen.add(operation.operationId);
+    result.push(operation);
+  }
+  return result;
 }
 
 export function planRetry(_input: Readonly<{
