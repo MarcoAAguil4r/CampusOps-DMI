@@ -1,0 +1,35 @@
+{
+  "schemaVersion": 1,
+  "week": 8,
+  "teamId": "E01",
+  "members": [
+    {
+      "studentId": "3523110229",
+      "commitShas": ["f92bafaf5ee6616da8623151c1a122cbcc8dd411"],
+      "files": [
+        "docs/data-model.md",
+        "app.json",
+        "package.json",
+        "src/bootstrap/CampusOpsRoot.tsx",
+        "src/infrastructure/CampusOpsDatabaseMigrations.ts",
+        "src/infrastructure/SQLiteDatabasePort.ts",
+        "src/infrastructure/SQLiteIncidentRepository.ts",
+        "src/infrastructure/openCampusOpsDatabase.ts",
+        "src/infrastructure/CampusOpsDatabaseMigrations.test.ts",
+        "src/infrastructure/CampusOpsDatabaseSqlite.test.ts",
+        "src/infrastructure/SQLiteIncidentRepository.test.ts"
+      ],
+      "tests": [
+        "npm run typecheck",
+        "npm test -- --runInBand --runTestsByPath src/infrastructure/CampusOpsDatabaseMigrations.test.ts src/infrastructure/CampusOpsDatabaseSqlite.test.ts src/infrastructure/SQLiteIncidentRepository.test.ts course-tests/smoke.test.tsx course-tests/public/week-06.test.ts",
+        "npx eslint src/bootstrap/CampusOpsRoot.tsx src/infrastructure/SQLiteDatabasePort.ts src/infrastructure/CampusOpsDatabaseMigrations.ts src/infrastructure/CampusOpsDatabaseMigrations.test.ts src/infrastructure/CampusOpsDatabaseSqlite.test.ts src/infrastructure/SQLiteIncidentRepository.ts src/infrastructure/SQLiteIncidentRepository.test.ts src/infrastructure/openCampusOpsDatabase.ts course-tests/smoke.test.tsx",
+        "npm run bundle:release"
+      ],
+      "reviews": [],
+      "prediction": "Migrar una base de esquema 1 a esquema 2 debe conservar las incidencias existentes; si falla la creación del índice, SQLite debe revertir tabla y versión. Al reiniciar la capa de repositorio se deben recuperar las incidencias y una misma clave local no debe crear contenido duplicado.",
+      "command": "npm test -- --runInBand --runTestsByPath src/infrastructure/CampusOpsDatabaseMigrations.test.ts src/infrastructure/CampusOpsDatabaseSqlite.test.ts src/infrastructure/SQLiteIncidentRepository.test.ts course-tests/smoke.test.tsx course-tests/public/week-06.test.ts",
+      "observedResult": "PASS: 5 suites y 19 pruebas. Se verificaron migración y rollback en SQLite real, integridad de la clave foránea, persistencia del repositorio, idempotencia, arranque de la aplicación y regresión de semana 6. Typecheck, lint focalizado y bundle Android de Expo también terminaron correctamente.",
+      "explanation": "Marco Antonio Aguilar Castillo (3523110229) implementó con asistencia de IA el esquema SQLite versionado, el repositorio persistente de incidencias y su conexión al arranque de la app; documentó el modelo y validó los escenarios de migración y rollback. Debe explicar y verificar el código antes de entregar. Este archivo aún no es evidencia final del equipo: faltan los registros auténticos de los otros dos integrantes."
+    }
+  ]
+}
