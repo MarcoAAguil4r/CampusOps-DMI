@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "week": 8,
-  "commitSha": "59088345808b8df508f7d3fd43823c340031a7af",
+  "commitSha": "7bbb5d19e0ea56199cce407e02522d1ea4f5f18d",
   "decision": "La solución integrada conserva incidencias y operaciones pendientes en SQLite versionado, y sincroniza una operación durable únicamente mediante PendingOperationSyncService. La cola no elimina una operación hasta recibir confirmed; para error, timeout o conflicto conserva la intención local. La integración añade una recuperación mínima para la carrera de dos encolados iguales: después de un INSERT fallido se vuelve a leer operationId y sólo se reutiliza si todo el contenido coincide.",
   "alternatives": [
     "Persistir incidencias y reintentos únicamente en memoria y reconstruirlos desde la interfaz al reiniciar la aplicación.",
