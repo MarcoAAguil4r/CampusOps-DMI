@@ -1,0 +1,60 @@
+{
+  "schemaVersion": 1,
+  "week": 8,
+  "mode": "verify",
+  "commitSha": "59088345808b8df508f7d3fd43823c340031a7af",
+  "evaluatedAt": "2026-10-26T06:18:04.452253+00:00",
+  "status": "fail",
+  "checks": [
+    {
+      "id": "base_files",
+      "status": "pass",
+      "detail": "missing=[]"
+    },
+    {
+      "id": "react_native_profile",
+      "status": "pass",
+      "detail": "missing packages=[]"
+    },
+    {
+      "id": "toolchain_scripts",
+      "status": "pass",
+      "detail": "missing scripts=[]"
+    },
+    {
+      "id": "workflow_integrity",
+      "status": "pass",
+      "detail": "bypass markers=[]"
+    },
+    {
+      "id": "secret_scan",
+      "status": "pass",
+      "detail": "hits=[]"
+    },
+    {
+      "id": "toolchain_1",
+      "status": "pass",
+      "detail": "npm run typecheck\n> dmi-react-native-starter@1.0.0 typecheck\n> tsc --noEmit"
+    },
+    {
+      "id": "toolchain_2",
+      "status": "pass",
+      "detail": "npm run lint\n> dmi-react-native-starter@1.0.0 lint\n> eslint .\n\n\nD:\\DMI\\CampusOps-DMI\\course-tests\\team\\week-03-authorization.test.ts\n  79:18  warning  'e' is defined but never used  @typescript-eslint/no-unused-vars\n\nâœ– 1 problem (0 errors, 1 warning)"
+    },
+    {
+      "id": "toolchain_3",
+      "status": "fail",
+      "detail": "npm run audit:ci\n7-859c-m2p7\nbrace-expansion: DoS via uncontrolled recursion in parseCommaParts causing stack exhaustion - https://github.com/advisories/GHSA-6j4f-fj2g-mc7p\nbrace-expansion: DoS via uncontrolled recursion in parseCommaParts causing stack exhaustion - https://github.com/advisories/GHSA-6j4f-fj2g-mc7p\nfix available via `npm audit fix`\nnode_modules/@expo/fingerprint/node_modules/brace-expansion\nnode_modules/brace-expansion\nnode_modules/glob/node_modules/brace-expansion\n\ncompression  <1.8.2\nSeverity: high\ncompression vulnerable to Denial of Service via memory leak on premature response close - https://github.com/advisories/GHSA-vc2v-76pw-4v95\nfix available via `npm audit fix`\nnode_modules/compression\n\njs-yaml  3.0.0 - 3.15.1 || 4.0.0 - 4.3.1\nSeverity: high\njs-yaml: maxTotalMergeKeys does not limit CPU use for empty merge sources - https://github.com/advisories/GHSA-2883-xcg3-v3hh\njs-yaml: maxTotalMergeKeys does not limit CPU use for empty merge sources - https://github.com/advisories/GHSA-2883-xcg3-v3hh\nfix available via `npm audit fix`\nnode_modules/@expo/xcpretty/node_modules/js-yaml\nnode_modules/js-yaml\n\nnode-forge  *\nSeverity: high\nnode-forge RSA PKCS#1 v1.5 signature verification accepts extra nested DigestAlgorithm elements - https://github.com/advisories/GHSA-86w9-cpqp-85rv\nfix available via `npm audit fix --force`\nWill install expo@54.0.38, which is a breaking change\nnode_modules/node-forge\n  @expo/cli  <=0.0.0-canary-20231123-1b19f96-4 || >=0.0.1-canary-20231125-d600e44\n  Depends on vulnerable versions of @expo/code-signing-certificates\n  Depends on vulnerable versions of node-forge\n  Depends on vulnerable versions of zod\n  node_modules/expo/node_modules/@expo/cli\n    expo  52.0.0-canary-20240625-2333e70 - 52.0.0-canary-20241018-f71b3e0 || >=55.0.0-canary-20250912-b5ce2a8\n    Depends on vulnerable versions of @expo/cli\n    node_modules/expo\n  @expo/code-signing-certificates  *\n  Depends on vulnerable versions of node-forge\n  node_modules/@expo/code-signing-certificates\n\nshell-quote  1.8.4 - 1.10.0\nSeverity: critical\nshell-quote: `quote()` command injection via a line terminator in a token after a `{ comment }` token - https://github.com/advisories/GHSA-pqg4-j6r4-53mv\nfix available via `npm audit fix`\nnode_modules/shell-quote\n\nsource-map-js  1.0.0 - 1.2.1\nSeverity: high\nsource-map-js allows event-loop denial of service through indexed source-map section offsets - https://github.com/advisories/GHSA-68fv-2mgg-jv7q\nfix available via `npm audit fix`\nnode_modules/source-map-js\n\nzod  <4.6.6\nSeverity: high\nZod can exhaust memory while validating oversized constrained collections - https://github.com/advisories/GHSA-mrhx-c7xc-m3w5\nfix available via `npm audit fix --force`\nWill install expo@54.0.38, which is a breaking change\nnode_modules/expo/node_modules/zod\n\n11 vulnerabilities (10 high, 1 critical)\n\nTo address issues that do not require attention, run:\n  npm audit fix\n\nTo address all issues (including breaking changes), run:\n  npm audit fix --force"
+    },
+    {
+      "id": "toolchain_4",
+      "status": "pass",
+      "detail": "npm run test:smoke\n> dmi-react-native-starter@1.0.0 test:smoke\n> jest --no-watchman --cacheDirectory .jest-cache --ci --runInBand course-tests/smoke.test.tsx\n\n  console.log\n    {\n      incidentId: 'inc-001',\n      status: 'success',\n      durationMs: 44,\n      token: '[REDACTED]',\n      reporterId: '[REDACTED]',\n      location: '[REDACTED]'\n    }\n\n      at ConsoleTelemetryAdapter.log [as logEvent] (src/infrastructure/ConsoleTelemetryAdapter.ts:6:13)\n\n  console.log\n    {\n      incidentId: 'inc-001',\n      status: 'success',\n      durationMs: 0,\n      token: '[REDACTED]',\n      reporterId: '[REDACTED]',\n      location: '[REDACTED]'\n    }\n\n      at ConsoleTelemetryAdapter.log [as logEvent] (src/infrastructure/ConsoleTelemetryAdapter.ts:6:13)\n\n  console.error\n    The current testing environment is not configured to support act(...)\n\n    \u001b[0m \u001b[90m 57 |\u001b[39m           key\u001b[33m=\u001b[39m{incident\u001b[33m.\u001b[39mid}\n     \u001b[90m 58 |\u001b[39m           onPress\u001b[33m=\u001b[39m{() \u001b[33m=>\u001b[39m {\n    \u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 59 |\u001b[39m             incidents\u001b[33m.\u001b[39mgetIncidentDetail(incident\u001b[33m.\u001b[39mid)\u001b[33m.\u001b[39mthen((detail) \u001b[33m=>\u001b[39m setSelectedIncident(detail))\u001b[33m;\u001b[39m\n     \u001b[90m    |\u001b[39m                                                                       \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n     \u001b[90m 60 |\u001b[39m           }}\n     \u001b[90m 61 |\u001b[39m           style\u001b[33m=\u001b[39m{styles\u001b[33m.\u001b[39mincident}\n     \u001b[90m 62 |\u001b[39m           testID\u001b[33m=\u001b[39m{\u001b[32m`incident-${incident.id}`\u001b[39m}\u001b[0m\n\n      at isConcurrentActEnvironment (node_modules/react-reconciler/cjs/react-reconciler.development.js:13990:17)\n      at warnIfUpdatesNotWrappedWithActDEV (node_modules/react-reconciler/cjs/react-reconciler.development.js:16304:7)\n      at scheduleUpdateOnFiber (node_modules/react-reconciler/cjs/react-reconciler.development.js:14070:11)\n      at dispatchSetStateInternal (node_modules/react-reconciler/cjs/react-reconciler.development.js:6784:13)\n      at dispatchSetState (node_modules/react-reconciler/cjs/react-reconciler.development.js:6741:7)\n      at setSelectedIncident (src/ui/IncidentApp.tsx:59:71)\n\n\nPASS course-tests/smoke.test.tsx (5.074 s)\n  âˆš renders the reproducible baseline and resolves backend state (676 ms)\n  âˆš shows a fictitious incident list and its selected detail (74 ms)\n  âˆš application bootstrap sends only redacted telemetry to the console (16 ms)\n\nTest Suites: 1 passed, 1 total\nTests:       3 passed, 3 total\nSnapshots:   0 total\nTime:        6.34 s\nRan all test suites matching /course-tests\\\\smoke.test.tsx/i."
+    },
+    {
+      "id": "toolchain_5",
+      "status": "pass",
+      "detail": "npm run backend:self-test\n> dmi-react-native-starter@1.0.0 backend:self-test\n> node course-backend/self-test.mjs\n\nCampusOps backend contracts: roles, reassignment conflict, lost response, idempotency, evidence and geocoding PASS.\nControlled backend self-test passed."
+    }
+  ]
+}

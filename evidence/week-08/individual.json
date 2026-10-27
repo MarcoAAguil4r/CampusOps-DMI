@@ -30,6 +30,55 @@
       "command": "npm test -- --runInBand --runTestsByPath src/infrastructure/CampusOpsDatabaseMigrations.test.ts src/infrastructure/CampusOpsDatabaseSqlite.test.ts src/infrastructure/SQLiteIncidentRepository.test.ts course-tests/smoke.test.tsx course-tests/public/week-06.test.ts",
       "observedResult": "PASS: 5 suites y 19 pruebas. Se verificaron migración y rollback en SQLite real, integridad de la clave foránea, persistencia del repositorio, idempotencia, arranque de la aplicación y regresión de semana 6. Typecheck, lint focalizado y bundle Android de Expo también terminaron correctamente.",
       "explanation": "Marco Antonio Aguilar Castillo (3523110229) implementó con asistencia de IA el esquema SQLite versionado, el repositorio persistente de incidencias y su conexión al arranque de la app; documentó el modelo y validó los escenarios de migración y rollback. Debe explicar y verificar el código antes de entregar. Este archivo aún no es evidencia final del equipo: faltan los registros auténticos de los otros dos integrantes."
+    },
+    {
+      "studentId": "3523110484",
+      "commitShas": [
+        "b34e5f8a2e8fe41a3c985f41df7155d99a1ddbb9",
+        "951d91753c90a734c16c56c724af6832098ea403"
+      ],
+      "files": [
+        "docs/sync-policy.md",
+        "src/course-evaluation/index.ts",
+        "src/application/PendingOperationSyncService.ts",
+        "src/infrastructure/SQLitePendingOperationsRepository.ts",
+        "src/infrastructure/SQLitePendingOperationsRepository.test.ts"
+      ],
+      "tests": [
+        "src/infrastructure/SQLitePendingOperationsRepository.test.ts",
+        "course-tests/public/week-08.test.ts"
+      ],
+      "reviews": [],
+      "prediction": "Una operación pendiente con el mismo operationId y contenido debe reutilizarse sin duplicarse; error, timeout y conflicto deben conservarla, y sólo confirmed debe eliminarla. Los cambios de campos independientes deben combinarse y una reasignación incompatible debe conservar la intención local como conflicto.",
+      "command": "npm test -- --ci --runInBand course-tests/public/week-08.test.ts src/infrastructure/SQLitePendingOperationsRepository.test.ts",
+      "observedResult": "La ejecución manual de integración de David incluyó estas suites y aprobó 6 suites y 18 pruebas, sin fallos. Esta observación no afirma que Dulce ejecutó el comando; sus commits verificables b34e5f8 y 951d917 contienen la implementación, política y pruebas de cola/sincronización.",
+      "explanation": "Los commits fueron verificados con Git bajo la autoría 5B-DAM <a3523110484@alumno.uttehuacan.edu.mx>, identidad asociada a la matrícula 3523110484 en la evidencia individual de Semana 6. Dulce implementó la cola durable, resolveSync, deduplicateOperations, PendingOperationSyncService, idempotencia y la política de sincronización. La posterior corrección de carrera en SQLitePendingOperationsRepository.ts pertenece al commit de David y no se atribuye a este registro."
+    },
+    {
+      "studentId": "3522110617",
+      "commitShas": [
+        "11f76bd050fb84bbcf79f7a57810257da64e6b0e"
+      ],
+      "files": [
+        "src/application/Week08Integration.test.ts",
+        "src/infrastructure/SQLitePendingOperationsRepository.ts",
+        "reports/week-08/migration-tests.json",
+        "reports/week-08/public-tests.json",
+        "reports/week-08/verify.json",
+        "evidence/week-08/engineering.json"
+      ],
+      "tests": [
+        "npm run typecheck",
+        "npm run lint",
+        "npm test -- --ci --runInBand course-tests/public/week-08.test.ts src/application/Week08Integration.test.ts src/infrastructure/CampusOpsDatabaseMigrations.test.ts src/infrastructure/CampusOpsDatabaseSqlite.test.ts src/infrastructure/SQLiteIncidentRepository.test.ts src/infrastructure/SQLitePendingOperationsRepository.test.ts",
+        "py -3 tools\\course_public_evaluator.py --week 8 --mode public --execute-toolchain",
+        "py -3 tools\\course_public_evaluator.py --week 8 --mode verify --execute-toolchain"
+      ],
+      "reviews": [],
+      "prediction": "La integración debe conservar incidencias y operaciones al reutilizar los repositorios, revertir los cambios parciales de una migración fallida y no duplicar un encolado concurrente con el mismo operationId y contenido. Error, timeout y conflicto deben conservar la operación; confirmed debe retirarla.",
+      "command": "npm test -- --ci --runInBand course-tests/public/week-08.test.ts src/application/Week08Integration.test.ts src/infrastructure/CampusOpsDatabaseMigrations.test.ts src/infrastructure/CampusOpsDatabaseSqlite.test.ts src/infrastructure/SQLiteIncidentRepository.test.ts src/infrastructure/SQLitePendingOperationsRepository.test.ts",
+      "observedResult": "Ejecución manual en Windows CMD: PASS, 6 suites y 18 pruebas aprobadas, 0 fallidas. TypeScript pasó sin errores; ESLint pasó con una advertencia preexistente y cero errores. Los evaluadores public y verify fallaron por audit:ci con 11 vulnerabilidades; public además falló entonces porque individual.json aún no tenía tres integrantes. No se declara que la auditoría haya aprobado.",
+      "explanation": "El commit 11f76bd050fb84bbcf79f7a57810257da64e6b0e, con autoría verificada de David Aguilar Rodriguez, agregó la prueba de integración de Semana 8, corrigió la carrera de idempotencia tras un INSERT competido y consolidó reportes/evidencia de QA. Esta aportación integra y verifica las implementaciones de Marco y Dulce sin atribuir a David las migraciones, el repositorio de incidencias, la cola original ni el servicio de sincronización que ellos implementaron."
     }
   ]
 }
