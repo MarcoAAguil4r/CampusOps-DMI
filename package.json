@@ -21,7 +21,8 @@
     "bundle:release": "expo export --platform android --output-dir dist/export",
     "native:generate": "expo prebuild --platform android --no-install",
     "package:android:ci": "npm run native:generate && ./android/gradlew -p android assembleDebug",
-    "package:android": "npm run native:generate && ./android/gradlew -p android assembleRelease"
+    "package:android": "npm run native:generate && ./android/gradlew -p android assembleRelease",
+    "test:geocoding-live": "node tools/geocoding-adapter-live-check.cjs"
   },
   "dependencies": {
     "expo": "~57.0.9",
@@ -65,6 +66,7 @@
       "metro": "0.84.5",
       "metro-config": "0.84.5",
       "metro-core": "0.84.5"
-    }
+    },
+    "shell-quote": "^1.11.0"
   }
 }

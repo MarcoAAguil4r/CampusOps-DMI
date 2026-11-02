@@ -1,7 +1,13 @@
 import type { GeocodingPort } from '../domain/ports/GeocodingPort';
 import type { IncidentLocation } from '../campusops/contracts';
 import { selectIncidentLocation } from '../course-evaluation';
-import { ContractError, HttpStatusError, TransportError, TransportTimeoutError } from './httpErrors';
+import {
+  ContractError,
+  HttpStatusError,
+  parseRetryAfterMs,
+  TransportError,
+  TransportTimeoutError,
+} from './httpErrors';
 
 const DEFAULT_ENDPOINT = 'https://nominatim.openstreetmap.org/search';
 const DEFAULT_TIMEOUT_MS = 5000;
@@ -12,6 +18,7 @@ export type GeocodingHttpAdapterConfig = Readonly<{
   timeoutMs?: number;
   minimumRequestIntervalMs?: number;
   scenario?: string;
+  extraHeaders?: Readonly<Record<string, string>>;
   fetcher?: typeof fetch;
 }>;
 
@@ -53,6 +60,7 @@ export class GeocodingHttpAdapter implements GeocodingPort {
   private readonly timeoutMs: number;
   private readonly minimumRequestIntervalMs: number;
   private readonly scenario: string | undefined;
+  private readonly extraHeaders: Readonly<Record<string, string>>;
   private readonly fetcher: typeof fetch;
   private nextRequestAt = 0;
 
@@ -61,6 +69,7 @@ export class GeocodingHttpAdapter implements GeocodingPort {
     this.timeoutMs = config.timeoutMs ?? DEFAULT_TIMEOUT_MS;
     this.minimumRequestIntervalMs = config.minimumRequestIntervalMs ?? DEFAULT_MIN_REQUEST_INTERVAL_MS;
     this.scenario = config.scenario;
+    this.extraHeaders = config.extraHeaders ?? {};
     this.fetcher = config.fetcher ?? fetch;
     if (!Number.isFinite(this.timeoutMs) || this.timeoutMs <= 0) {
       throw new RangeError('Geocoding timeout must be a positive finite number');
@@ -89,11 +98,15 @@ export class GeocodingHttpAdapter implements GeocodingPort {
       const headers: Record<string, string> = {
         Accept: 'application/json',
         'User-Agent': 'CampusOps/1.0 (academic project)',
+        ...this.extraHeaders,
       };
       if (this.scenario !== undefined) headers['X-Course-Scenario'] = this.scenario;
 
       response = await this.fetcher(url.toString(), { headers, signal: controller.signal });
-      if (!response.ok) throw new HttpStatusError(response.status, null);
+      if (!response.ok) {
+        const retryAfterMs = parseRetryAfterMs(response.headers.get('Retry-After'));
+        throw new HttpStatusError(response.status, null, retryAfterMs);
+      }
       responseText = await response.text();
     } catch (error) {
       if (error instanceof HttpStatusError) throw error;

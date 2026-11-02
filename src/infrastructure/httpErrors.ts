@@ -5,15 +5,39 @@ export class ContractError extends Error {
   }
 }
 
+const MAX_TIMER_DELAY_MS = 2_147_483_647;
+
+export function parseRetryAfterMs(value: string | null, nowMs = Date.now()): number | null {
+  if (value === null) return null;
+
+  const normalized = value.trim();
+  if (normalized.length === 0) return null;
+
+  if (/^\d+$/.test(normalized)) {
+    const delayMs = Number(normalized) * 1000;
+    return Number.isFinite(delayMs) ? Math.min(delayMs, MAX_TIMER_DELAY_MS) : null;
+  }
+
+  if (!Number.isFinite(nowMs)) return null;
+  const retryAtMs = Date.parse(normalized);
+  if (!Number.isFinite(retryAtMs)) return null;
+  return Math.min(MAX_TIMER_DELAY_MS, Math.max(0, retryAtMs - nowMs));
+}
+
 export class HttpStatusError extends Error {
   public readonly status: number;
   public readonly code: string | null;
+  public readonly retryAfterMs: number | null;
 
-  public constructor(status: number, code: string | null) {
+  public constructor(status: number, code: string | null, retryAfterMs: number | null = null) {
     super(`Request failed with status ${status}`);
     this.name = 'HttpStatusError';
     this.status = status;
     this.code = code;
+    this.retryAfterMs =
+      typeof retryAfterMs === 'number' && Number.isFinite(retryAfterMs) && retryAfterMs >= 0
+        ? retryAfterMs
+        : null;
   }
 }
 

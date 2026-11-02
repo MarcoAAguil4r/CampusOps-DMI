@@ -31,12 +31,24 @@ conserva el texto manual sin inventar coordenadas.
 
 Timeouts, desconexiones, respuestas HTTP no exitosas (incluido 429) y contratos
 malformados se propagan como errores explícitos desde el adaptador; la capa que
-llama puede presentar la alternativa manual. No se reintenta aquí: la política
-de reintentos y `Retry-After` se integra por separado.
+llama puede presentar la alternativa manual. Para un error HTTP, el adaptador
+conserva `Retry-After` en `HttpStatusError.retryAfterMs`; el parser acepta
+segundos o una fecha HTTP, convierte ambos formatos a milisegundos, limita la
+demora al máximo representable por un temporizador y devuelve `null` ante un
+encabezado ausente o inválido. El adaptador no ejecuta reintentos: la política
+de reintentos sigue en la capa correspondiente.
 
 Las pruebas unitarias usan un `fetch` sustituido y las variantes del endpoint
 CampusOps `GET /v1/geocoding` (`success`, `rate_limited`, `slow`,
 `invalid_coordinates`, `incomplete` y `timeout`). Esos escenarios reproducibles
 no cuentan como ejecución contra Nominatim. La evidencia de una ejecución
-externa real con texto ficticio debe añadirse después de verificarla en el
-entorno del equipo; no se declara ejecutada en este documento.
+real contra el backend controlado local, usando `fetch` real de Node y la
+referencia ficticia `Zona ficticia`, quedó reproducida con:
+
+```bash
+npm run test:geocoding-live
+```
+
+Resultado observado: **PASS**; el adaptador obtuvo la ubicación sintética
+`Edificio de prueba A` y recibió HTTP 429 con `retryAfterMs = 1000`. Esta
+comprobación no consulta Nominatim ni se presenta como una ejecución externa.

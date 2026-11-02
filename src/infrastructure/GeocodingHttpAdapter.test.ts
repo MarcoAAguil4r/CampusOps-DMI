@@ -1,20 +1,26 @@
 import { GeocodingHttpAdapter } from './GeocodingHttpAdapter';
 import { ContractError, HttpStatusError, TransportTimeoutError } from './httpErrors';
 
-function response(payload: unknown, status = 200): Response {
+function response(payload: unknown, status = 200, headers: HeadersInit = {}): Response {
   return {
     ok: status >= 200 && status < 300,
     status,
+    headers: new Headers(headers),
     text: async () => JSON.stringify(payload),
   } as Response;
 }
 
 type FetchCall = Readonly<{ input: RequestInfo | URL; init: RequestInit | undefined }>;
 
-function fetchResponse(payload: unknown, status = 200, call?: { value: FetchCall | null }): typeof fetch {
+function fetchResponse(
+  payload: unknown,
+  status = 200,
+  call?: { value: FetchCall | null },
+  headers: HeadersInit = {},
+): typeof fetch {
   return async (input, init) => {
     if (call !== undefined) call.value = { input, init };
-    return response(payload, status);
+    return response(payload, status, headers);
   };
 }
 
@@ -55,6 +61,27 @@ describe('GeocodingHttpAdapter', () => {
     expect(call.value?.init?.headers).toMatchObject({ 'X-Course-Scenario': 'success' });
   });
 
+  test('allows explicit headers for controlled or authenticated providers', async () => {
+    const call: { value: FetchCall | null } = { value: null };
+    const adapter = new GeocodingHttpAdapter({
+      endpointUrl: 'http://127.0.0.1:4310/v1/geocoding',
+      minimumRequestIntervalMs: 0,
+      scenario: 'success',
+      extraHeaders: {
+        Authorization: 'Bearer course-valid-token',
+        'X-Course-Actor': 'reporter-1',
+      },
+      fetcher: fetchResponse({ label: 'Zona ficticia', latitude: 0, longitude: 0 }, 200, call),
+    });
+
+    await expect(adapter.geocode('Zona ficticia')).resolves.toMatchObject({ source: 'provider' });
+    expect(call.value?.init?.headers).toMatchObject({
+      Authorization: 'Bearer course-valid-token',
+      'X-Course-Actor': 'reporter-1',
+      'X-Course-Scenario': 'success',
+    });
+  });
+
   test('returns null when the provider has no matching result', async () => {
     const adapter = new GeocodingHttpAdapter({
       endpointUrl: 'https://example.test/search',
@@ -76,7 +103,7 @@ describe('GeocodingHttpAdapter', () => {
     const limited = new GeocodingHttpAdapter({
       endpointUrl: 'https://example.test/search',
       minimumRequestIntervalMs: 0,
-      fetcher: fetchResponse(null, 429),
+      fetcher: fetchResponse(null, 429, undefined, { 'Retry-After': '2' }),
     });
     const malformed = new GeocodingHttpAdapter({
       endpointUrl: 'https://example.test/search',
@@ -84,11 +111,9 @@ describe('GeocodingHttpAdapter', () => {
       fetcher: fetchResponse({ label: 'Zona sin coordenadas' }),
     });
 
-    await limited.geocode('Zona ficticia').catch((error: unknown) => {
-      expect(error).toBeInstanceOf(HttpStatusError);
-      if (!(error instanceof HttpStatusError)) throw error;
-      expect(error.status).toBe(429);
-    });
+    const rateLimitedRequest = limited.geocode('Zona ficticia');
+    await expect(rateLimitedRequest).rejects.toBeInstanceOf(HttpStatusError);
+    await expect(rateLimitedRequest).rejects.toMatchObject({ status: 429, retryAfterMs: 2000 });
     await expect(malformed.geocode('Zona ficticia')).resolves.toBeNull();
   });
 
