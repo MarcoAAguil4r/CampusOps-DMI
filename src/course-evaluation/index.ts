@@ -172,5 +172,27 @@ export function reducePermissionLifecycle(
 
 /** Week 09: see docs/CAMPUSOPS_API.md; this is not a completed solution. */
 export function selectIncidentLocation(_provider: unknown, _manualLabel: string): IncidentLocation {
-  return pending('selectIncidentLocation');
+  if (typeof _manualLabel !== 'string' || _manualLabel.trim().length === 0) {
+    throw new Error('A non-empty manual incident location is required');
+  }
+
+  if (!isRecord(_provider)) return { source: 'manual', label: _manualLabel };
+
+  const { label, latitude, longitude } = _provider;
+  if (
+    typeof label !== 'string' ||
+    label.trim().length === 0 ||
+    typeof latitude !== 'number' ||
+    !Number.isFinite(latitude) ||
+    latitude < -90 ||
+    latitude > 90 ||
+    typeof longitude !== 'number' ||
+    !Number.isFinite(longitude) ||
+    longitude < -180 ||
+    longitude > 180
+  ) {
+    return { source: 'manual', label: _manualLabel };
+  }
+
+  return { source: 'provider', label: label.trim(), latitude, longitude };
 }
