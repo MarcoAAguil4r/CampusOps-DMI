@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "week": 9,
-  "commitSha": "e9e4fb25091637a997c005f9c4e79b80c3477eaa",
+  "commitSha": "1c510e006c4c6e53e68d6203553a242626a16baf",
   "decision": "CampusOps integra geocodificación detrás de puerto/adaptador con caché y selectIncidentLocation: solo acepta etiqueta no vacía y coordenadas finitas en rango; si el proveedor devuelve null, 429, datos incompletos o inválidos, se continúa con ubicación manual sin inventar coordenadas. Los reintentos usan planRetry con Retry-After acotado, tope attempt<4 y POST únicamente con clave de idempotencia estable, de modo que una respuesta perdida tras guardar no duplique efectos. La UI expone el camino manual cuando el proveedor no sirve.",
   "alternatives": [
     "Reintentar indefinidamente cualquier error de red o HTTP hasta obtener respuesta.",

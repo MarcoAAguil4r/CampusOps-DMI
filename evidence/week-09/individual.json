@@ -40,12 +40,10 @@
         "src/course-evaluation/week09Retry.test.ts",
         "src/infrastructure/CampusOpsApiClient.ts",
         "src/infrastructure/CampusOpsApiClient.test.ts",
-        "src/infrastructure/RemoteIncidentRepository.ts",
+        "src/infrastructure/httpErrors.ts",
+        "src/infrastructure/httpErrors.test.ts",
         "docs/resilience-policy.md",
-        "tools/retry-lost-resolution-check.cjs",
-        "httpError.ts",
-        "httpErrors.test.ts"
-        
+        "tools/retry-lost-resolution-check.cjs"
       ],
       "tests": [
         "course-tests/public/week-09.test.ts",
@@ -61,7 +59,7 @@
     {
       "studentId": "3523110484",
       "commitShas": [
-        "e9e4fb25091637a997c005f9c4e79b80c3477eaa"
+        "1c510e006c4c6e53e68d6203553a242626a16baf"
       ],
       "files": [
         "src/ui/IncidentApp.tsx",
@@ -81,7 +79,7 @@
       ],
       "prediction": "Si el proveedor no está disponible, la interfaz debe permitir escribir edificio/zona/referencia y continuar con source=manual, sin inventar coordenadas ni presentar un fallo como ubicación obtenida del proveedor.",
       "command": "npm.cmd test -- --runInBand course-tests/public/week-09.test.ts src/ui/IncidentApp.location.test.tsx",
-      "observedResult": "smoke PASS, location tests PASS (2), week-09 públicos, test:retry-lost-resolution PASS. Integrado en main (PR #12 / 85f7e3e). La UI de ubicación manual y la integración con el adaptador/caché y planRetry quedan cubiertas por las pruebas públicas y focalizadas.",
+      "observedResult": "smoke PASS, location tests PASS (2), week-09 públicos, test:retry-lost-resolution PASS. PR #12 aún abierto. Commit de cableado del proveedor 1c510e0 (CachedGeocodingAdapter → IncidentApp en CampusOpsRoot). test:smoke PASS (3); IncidentApp.location.test PASS (2) con GeocodingPort inyectado; week-09 públicos PASS; test:retry-lost-resolution PASS (same key/body, un resolve); make verify-week-09 y public-test-week-09 status pass sobre 1c510e0.",
       "explanation": "Dulce implementó el flujo visible de ubicación manual en IncidentApp, pruebas de integración del camino manual, y consolidó reports/week-09 y evidence/week-09 del equipo. No se atribuye el adaptador de Marco ni planRetry de David."
     }
   ]
