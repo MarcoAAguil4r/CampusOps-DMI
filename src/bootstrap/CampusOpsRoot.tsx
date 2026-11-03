@@ -61,5 +61,9 @@ export default function CampusOpsRoot() {
     return <ActivityIndicator accessibilityLabel="Inicializando almacenamiento local" />;
   }
 
-  return <IncidentApp campusOps={campusOps} incidents={incidents} />;
+  const geocoding = new CachedGeocodingAdapter(new GeocodingHttpAdapter());
+
+  return (
+    <IncidentApp campusOps={campusOps} incidents={incidents} geocoding={geocoding} />
+  );
 }
