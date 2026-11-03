@@ -12,6 +12,8 @@ describe('parseRetryAfterMs', () => {
     expect(parseRetryAfterMs(null, nowMs)).toBeNull();
     expect(parseRetryAfterMs('', nowMs)).toBeNull();
     expect(parseRetryAfterMs('not-a-date', nowMs)).toBeNull();
+    expect(parseRetryAfterMs('-1', nowMs)).toBeNull();
+    expect(parseRetryAfterMs('1.5', nowMs)).toBeNull();
     expect(parseRetryAfterMs('999999999999999999999999999', nowMs)).toBe(2_147_483_647);
     expect(parseRetryAfterMs('Mon, 02 Nov 2026 11:59:59 GMT', nowMs)).toBe(0);
     expect(parseRetryAfterMs('Mon, 02 Nov 2026 12:00:05 GMT', Number.NaN)).toBeNull();

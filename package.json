@@ -22,7 +22,8 @@
     "native:generate": "expo prebuild --platform android --no-install",
     "package:android:ci": "npm run native:generate && ./android/gradlew -p android assembleDebug",
     "package:android": "npm run native:generate && ./android/gradlew -p android assembleRelease",
-    "test:geocoding-live": "node tools/geocoding-adapter-live-check.cjs"
+    "test:geocoding-live": "node tools/geocoding-adapter-live-check.cjs",
+    "test:retry-lost-resolution": "node tools/retry-lost-resolution-check.cjs"
   },
   "dependencies": {
     "expo": "~57.0.9",

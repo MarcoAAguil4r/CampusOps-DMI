@@ -4,6 +4,10 @@ Actividad: integración resiliente con un servicio de mapas o geocodificación.
 El trabajo continúa en el mismo repositorio y equipo. La actividad vale 8
 puntos; el quiz individual se entrega por separado.
 
+Para la contribución vigente de esta rama, David Aguilar Rodriguez asume el
+alcance del Integrante 2 (reintentos acotados e idempotencia) en sustitución de
+la asignación anterior a Dulce. Esta nota no reasigna los demás alcances.
+
 ## Ramas individuales
 
 Cada integrante crea su rama desde la versión integrada de la rama principal,
