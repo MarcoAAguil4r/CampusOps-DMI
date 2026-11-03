@@ -27,7 +27,7 @@
       "reviews": [],
       "prediction": "El adaptador y la caché deben devolver ubicaciones solo con etiqueta y coordenadas válidas; timeout, 429 o datos inválidos no deben presentarse como coordenadas reales.",
       "command": "npm.cmd test -- --runInBand course-tests/public/week-09.test.ts src/course-evaluation/week09-location.test.ts src/infrastructure/CachedGeocodingAdapter.test.ts",
-      "observedResult": "Integrado en main (PR #9 / 06fc784). Las pruebas públicas de selectIncidentLocation y las focalizadas de adaptador/caché forman parte de la base verificada del equipo antes del cierre.",
+      "observedResult": "Integrado en main (PR #9 / 06fc784). Comando citado: pruebas públicas de selectIncidentLocation más week09-location y CachedGeocodingAdapter en la base del equipo; PASS en la verificación de cierre del equipo sobre main.",
       "explanation": "Marco implementó el puerto/adaptador de geocodificación, caché, selectIncidentLocation y documentación de resiliencia. No se le atribuye planRetry ni la UI de cierre."
     },
     {
@@ -52,8 +52,8 @@
       ],
       "reviews": [],
       "prediction": "planRetry debe respetar Retry-After, no reintentar desde el intento 4 y exigir clave de idempotencia estable en POST para no duplicar efectos tras una respuesta perdida.",
-      "command": "npm.cmd test -- --runInBand course-tests/public/week-09.test.ts src/course-evaluation/week09Retry.test.ts",
-      "observedResult": "Integrado en main (PR #11 / df092e6). planRetry y escenarios de POST con/sin clave y tope de intentos quedan cubiertos por las pruebas públicas y focalizadas de reintento. 22 pruebas / 5 suites + un solo resolve en retry-lost.",
+      "command": "npm.cmd test -- --runInBand course-tests/public/week-09.test.ts src/course-evaluation/week09Retry.test.ts && npm.cmd run test:retry-lost-resolution",
+      "observedResult": "Integrado en main (PR #11 / df092e6). 22 pruebas en 5 suites en su verificación. test:retry-lost-resolution: dos envíos con la misma clave y el mismo cuerpo; un solo evento resolve. planRetry cubierto en pruebas públicas week-09.",
       "explanation": "David implementó la política de reintentos acotados, integración con el cliente HTTP e idempotencia de operaciones con efecto. No se le atribuye el adaptador de mapas ni la UI/reportes de cierre de Dulce."
     },
     {
@@ -79,7 +79,7 @@
       ],
       "prediction": "Si el proveedor no está disponible, la interfaz debe permitir escribir edificio/zona/referencia y continuar con source=manual, sin inventar coordenadas ni presentar un fallo como ubicación obtenida del proveedor.",
       "command": "npm.cmd test -- --runInBand course-tests/public/week-09.test.ts src/ui/IncidentApp.location.test.tsx",
-      "observedResult": "smoke PASS, location tests PASS (2), week-09 públicos, test:retry-lost-resolution PASS. PR #12 aún abierto. Commit de cableado del proveedor 1c510e0 (CachedGeocodingAdapter → IncidentApp en CampusOpsRoot). test:smoke PASS (3); IncidentApp.location.test PASS (2) con GeocodingPort inyectado; week-09 públicos PASS; test:retry-lost-resolution PASS (same key/body, un resolve); make verify-week-09 y public-test-week-09 status pass sobre 1c510e0.",
+      "observedResult": "PR #12 mergeado en main (44b5cca). Aporte de UI/cableado 1c510e0 (CachedGeocodingAdapter → IncidentApp). test:smoke PASS (3); IncidentApp.location.test PASS (2); week-09 públicos PASS; test:retry-lost-resolution PASS (same key/body, un resolve); verify-week-09 y public-test-week-09 PASS sobre la versión de entrega.",
       "explanation": "Dulce implementó el flujo visible de ubicación manual en IncidentApp, pruebas de integración del camino manual, y consolidó reports/week-09 y evidence/week-09 del equipo. No se atribuye el adaptador de Marco ni planRetry de David."
     }
   ]

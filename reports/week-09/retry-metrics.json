@@ -1,36 +1,36 @@
 {
   "schemaVersion": 1,
   "week": 9,
-  "commitSha": "1c510e006c4c6e53e68d6203553a242626a16baf",
-  "generatedAt": "2026-11-03T02:50:00.000Z",
+  "commitSha": "44b5cca69b4fb6710e71388c26a2a25ad7891d52",
+  "generatedAt": "2026-11-03THH:MM:SS-06:00",
   "checks": [
     {
-      "id": "retry-after-800ms-single-plan",
+      "id": "planRetry-retry-after-delay-calculated",
       "status": "pass",
       "scenarioType": "boundary",
       "command": "npm.cmd test -- --runInBand course-tests/public/week-09.test.ts",
-      "evidence": "Observado: attempts=1, delayMsObserved=800, duplicatedEffects=0. planRetry GET 429 attempt 1 con Retry-After 800 ms produce un solo plan de reintento."
+      "evidence": "La prueba publica comprueba que planRetry devuelve una demora calculada de 800 ms al respetar Retry-After. Los 800 ms son la decision que devuelve la funcion, no un tiempo transcurrido ni un conteo de solicitudes."
     },
     {
-      "id": "no-retry-from-attempt-4",
+      "id": "planRetry-attempt-4-no-retry",
       "status": "pass",
       "scenarioType": "boundary",
       "command": "npm.cmd test -- --runInBand course-tests/public/week-09.test.ts",
-      "evidence": "Observado: attempts=4, delayMsObserved=0, duplicatedEffects=0. planRetry timeout attempt 4 → retry false."
+      "evidence": "Con el intento 4 la decision de planRetry es retry: false (tope de intentos publicado)."
     },
     {
-      "id": "post-without-stable-key-not-retried",
+      "id": "planRetry-post-without-key-no-retry",
       "status": "pass",
       "scenarioType": "failure",
       "command": "npm.cmd test -- --runInBand course-tests/public/week-09.test.ts",
-      "evidence": "Observado: attempts=1, delayMsObserved=0, duplicatedEffects=0. POST 503 sin idempotencyKey no reintenta; evita duplicar resolución/cierre."
+      "evidence": "Un POST sin clave de idempotencia estable produce la decision retry: false. Es una decision de politica; no se observo ninguna solicitud enviada."
     },
     {
-      "id": "lost-resolution-with-stable-key-may-retry-once-plan",
+      "id": "lost-resolution-observed-on-delivery-version",
       "status": "pass",
       "scenarioType": "failure",
-      "command": "npm.cmd test -- --runInBand course-tests/public/week-09.test.ts",
-      "evidence": "Observado: POST timeout attempt 1 con clave resolve-campus-inc-001-op-1 → retry true y requiresStableIdempotencyKey false; la misma identidad se reutiliza al reintentar."
+      "command": "npm.cmd run test:retry-lost-resolution",
+      "evidence": "Ejecutado sobre la version 44b5cca69b4fb6710e71388c26a2a25ad7891d52: dos envios con la misma Idempotency-Key y el mismo cuerpo, y un solo evento resolve en el backend controlado. Salida: Lost resolution response check: replayed same key/body; one resolve history event PASS. El resultado de David sobre su version (df092e6) se registra aparte en individual.json."
     }
   ]
 }
