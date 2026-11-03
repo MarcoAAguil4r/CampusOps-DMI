@@ -6,6 +6,11 @@ export class ContractError extends Error {
 }
 
 const MAX_TIMER_DELAY_MS = 2_147_483_647;
+const HTTP_DATE_PATTERNS = [
+  /^[A-Z][a-z]{2}, \d{2} [A-Z][a-z]{2} \d{4} \d{2}:\d{2}:\d{2} GMT$/,
+  /^[A-Z][a-z]+, \d{2}-[A-Z][a-z]{2}-\d{2} \d{2}:\d{2}:\d{2} GMT$/,
+  /^[A-Z][a-z]{2} [A-Z][a-z]{2} {1,2}\d{1,2} \d{2}:\d{2}:\d{2} \d{4}$/,
+];
 
 export function parseRetryAfterMs(value: string | null, nowMs = Date.now()): number | null {
   if (value === null) return null;
@@ -18,7 +23,9 @@ export function parseRetryAfterMs(value: string | null, nowMs = Date.now()): num
     return Number.isFinite(delayMs) ? Math.min(delayMs, MAX_TIMER_DELAY_MS) : null;
   }
 
-  if (!Number.isFinite(nowMs)) return null;
+  if (!HTTP_DATE_PATTERNS.some((pattern) => pattern.test(normalized)) || !Number.isFinite(nowMs)) {
+    return null;
+  }
   const retryAtMs = Date.parse(normalized);
   if (!Number.isFinite(retryAtMs)) return null;
   return Math.min(MAX_TIMER_DELAY_MS, Math.max(0, retryAtMs - nowMs));

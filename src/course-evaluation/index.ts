@@ -154,7 +154,32 @@ export function planRetry(_input: Readonly<{
   retryAfterMs?: number;
   idempotencyKey?: string;
 }>): Readonly<{ retry: boolean; delayMs: number; requiresStableIdempotencyKey: boolean }> {
-  return pending('planRetry');
+  const requiresStableIdempotencyKey = _input.method === 'POST' &&
+    (typeof _input.idempotencyKey !== 'string' || _input.idempotencyKey.trim().length === 0);
+  const retryableStatus =
+    _input.status === 'timeout' ||
+    _input.status === 429 ||
+    _input.status === 500 ||
+    _input.status === 502 ||
+    _input.status === 503 ||
+    _input.status === 504;
+  const validAttempt = Number.isInteger(_input.attempt) && _input.attempt >= 1 && _input.attempt < 4;
+
+  if (requiresStableIdempotencyKey || !validAttempt || !retryableStatus) {
+    return { retry: false, delayMs: 0, requiresStableIdempotencyKey };
+  }
+
+  const maximumDelayMs = 30_000;
+  const retryAfterMs = _input.retryAfterMs;
+  if (typeof retryAfterMs === 'number' && Number.isFinite(retryAfterMs) && retryAfterMs > maximumDelayMs) {
+    return { retry: false, delayMs: 0, requiresStableIdempotencyKey: false };
+  }
+  const delayMs =
+    typeof retryAfterMs === 'number' && Number.isFinite(retryAfterMs) && retryAfterMs >= 0
+      ? Math.min(retryAfterMs, maximumDelayMs)
+      : Math.min(250 * 2 ** (_input.attempt - 1), maximumDelayMs);
+
+  return { retry: true, delayMs, requiresStableIdempotencyKey: false };
 }
 
 export function reduceRemoteResponses(_input: Readonly<{

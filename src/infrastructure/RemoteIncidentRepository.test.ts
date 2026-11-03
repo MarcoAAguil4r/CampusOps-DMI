@@ -159,7 +159,7 @@ describe('RemoteIncidentRepository', () => {
     );
   });
 
-  test('retries creation with the same idempotency key and request body', async () => {
+  test('replays a create request with the same idempotency key and body', async () => {
     const idempotencyKey = 'create-water-operation-replay';
     const requestInits: RequestInit[] = [];
     const incident = {
@@ -192,6 +192,43 @@ describe('RemoteIncidentRepository', () => {
     expect(requestInits.map((init) => JSON.parse(init.body as string))).toEqual([
       { category: 'water', description: 'Fuga ficticia', location: 'Edificio de prueba B' },
       { category: 'water', description: 'Fuga ficticia', location: 'Edificio de prueba B' },
+    ]);
+  });
+
+  test('replays a lost response with the original operation identity and does not duplicate the effect', async () => {
+    const idempotencyKey = 'create-water-timeout-after-commit';
+    const requestInits: RequestInit[] = [];
+    const incident = {
+      id: 'campus-inc-202',
+      version: 1,
+      status: 'open',
+      payload: { category: 'water', description: 'Fuga ficticia', location: 'Edificio de prueba B' },
+    };
+    global.fetch = jest.fn((_url: RequestInfo | URL, init?: RequestInit) => {
+      requestInits.push(init ?? {});
+      if (requestInits.length === 1) {
+        return Promise.reject(Object.assign(new Error('response was lost'), { name: 'AbortError' }));
+      }
+      return Promise.resolve({
+        ok: true,
+        status: 200,
+        text: async () => JSON.stringify({ incident, operationId: idempotencyKey, duplicate: true }),
+      } as Response);
+    });
+
+    await expect(repository.create({
+      category: 'water',
+      description: 'Fuga ficticia',
+      location: 'Edificio de prueba B',
+      idempotencyKey,
+    })).resolves.toMatchObject({ id: incident.id });
+
+    expect(requestInits).toHaveLength(2);
+    expect(requestInits.map((init) => (init.headers as Record<string, string>)['Idempotency-Key']))
+      .toEqual([idempotencyKey, idempotencyKey]);
+    expect(requestInits.map((init) => init.body)).toEqual([
+      JSON.stringify({ category: 'water', description: 'Fuga ficticia', location: 'Edificio de prueba B' }),
+      JSON.stringify({ category: 'water', description: 'Fuga ficticia', location: 'Edificio de prueba B' }),
     ]);
   });
 });

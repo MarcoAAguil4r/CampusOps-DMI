@@ -52,3 +52,15 @@ npm run test:geocoding-live
 Resultado observado: **PASS**; el adaptador obtuvo la ubicación sintética
 `Edificio de prueba A` y recibió HTTP 429 con `retryAfterMs = 1000`. Esta
 comprobación no consulta Nominatim ni se presenta como una ejecución externa.
+
+## Reintentos e idempotencia
+
+`planRetry` sólo reintenta timeout, 429 y errores HTTP transitorios 500, 502,
+503 o 504. Hay como máximo tres reintentos planificados (los intentos 1 a 3);
+el intento 4 y los fallos definitivos se informan sin otra solicitud. La espera
+usa `Retry-After` cuando es un número finito no negativo de hasta 30 s; si el
+servidor pide más, no se reintenta. Si no existe, aplica backoff de 250, 500 y
+1000 ms. Un `POST` requiere una clave
+de idempotencia no vacía y estable antes de ser repetido. La cola durable
+conserva la misma operación y contenido tras timeout, conflicto o error, y
+sólo la elimina tras confirmación explícita del servidor.
