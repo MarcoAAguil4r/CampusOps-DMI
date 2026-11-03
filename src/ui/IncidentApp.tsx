@@ -4,6 +4,7 @@ import { StatusBar } from 'expo-status-bar';
 
 import type { CampusOpsApplication } from '../application/CampusOpsApplication';
 import type { Incident, IncidentApplication } from '../application/IncidentApplication';
+import type { GeocodingPort } from '../domain/ports/GeocodingPort';
 import { selectIncidentLocation } from '../course-evaluation';
 
 type BackendStatus = 'checking' | 'available' | 'offline';
@@ -11,6 +12,8 @@ type BackendStatus = 'checking' | 'available' | 'offline';
 type IncidentAppProps = Readonly<{
   campusOps: CampusOpsApplication;
   incidents: IncidentApplication;
+  /** Puerto de geocodificación (Marco). En pruebas se inyecta un doble. */
+  geocoding?: GeocodingPort;
 }>;
 
 type LocationUiState =
@@ -20,7 +23,7 @@ type LocationUiState =
   | Readonly<{ kind: 'manual_required'; reason: string }>
   | Readonly<{ kind: 'resolved'; source: 'provider' | 'manual'; label: string }>;
 
-export function IncidentApp({ campusOps, incidents }: IncidentAppProps) {
+export function IncidentApp({ campusOps, incidents, geocoding }: IncidentAppProps) {
   const [backendStatus, setBackendStatus] = useState<BackendStatus>('checking');
   const [items, setItems] = useState<readonly Incident[]>([]);
   const [selectedIncident, setSelectedIncident] = useState<Incident | null>(null);
@@ -39,11 +42,29 @@ export function IncidentApp({ campusOps, incidents }: IncidentAppProps) {
     };
   }, [campusOps, incidents]);
 
-  function requestProviderLocation() {
+  async function requestProviderLocation() {
     setLocationState({ kind: 'loading' });
-    // Doble controlado: proveedor no disponible (p. ej. 429), sin depender de API externa.
-    const providerResult: unknown = { status: 429 };
     const fallbackLabel = manualLabel.trim() || 'Referencia pendiente';
+    const query = manualLabel.trim() || selectedIncident?.location.label || 'CampusOps';
+
+    let providerResult: unknown = null;
+    if (geocoding) {
+      try {
+        const location = await geocoding.geocode(query);
+        if (location?.source === 'provider') {
+          providerResult = {
+            label: location.label,
+            latitude: location.latitude,
+            longitude: location.longitude,
+          };
+        } else {
+          providerResult = null;
+        }
+      } catch {
+        providerResult = null;
+      }
+    }
+
     const chosen = selectIncidentLocation(providerResult, fallbackLabel);
 
     if (
@@ -93,7 +114,8 @@ export function IncidentApp({ campusOps, incidents }: IncidentAppProps) {
         <Text>{selectedIncident.description}</Text>
         <Text>Categoría: {selectedIncident.category}</Text>
         <Text>Estado: {selectedIncident.status}</Text>
-        <Text>Ubicación registrada: {selectedIncident.location.label}</Text>
+        {/* Texto exigido por smoke / AC-01 */}
+        <Text>Ubicación: {selectedIncident.location.label}</Text>
 
         <Text testID="location-ui-status">
           {locationState.kind === 'idle' && 'Ubicación: sin solicitar'}
@@ -108,7 +130,9 @@ export function IncidentApp({ campusOps, incidents }: IncidentAppProps) {
         <Pressable
           accessibilityRole="button"
           testID="request-provider-location"
-          onPress={requestProviderLocation}
+          onPress={() => {
+            void requestProviderLocation();
+          }}
           style={styles.button}
         >
           <Text>Obtener ubicación del proveedor</Text>

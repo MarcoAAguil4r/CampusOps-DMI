@@ -8,6 +8,8 @@ import { fictitiousIncidents } from '../infrastructure/InMemoryIncidentRepositor
 import { openCampusOpsDatabase } from '../infrastructure/openCampusOpsDatabase';
 import { SQLiteIncidentRepository } from '../infrastructure/SQLiteIncidentRepository';
 import { IncidentApp } from '../ui/IncidentApp';
+import { GeocodingHttpAdapter } from '../infrastructure/GeocodingHttpAdapter';
+import { CachedGeocodingAdapter } from '../infrastructure/CachedGeocodingAdapter';
 
 const campusOps = new CampusOpsApplication(new CourseBackendHealthAdapter());
 

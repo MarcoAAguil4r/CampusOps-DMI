@@ -42,7 +42,10 @@
         "src/infrastructure/CampusOpsApiClient.test.ts",
         "src/infrastructure/RemoteIncidentRepository.ts",
         "docs/resilience-policy.md",
-        "tools/retry-lost-resolution-check.cjs"
+        "tools/retry-lost-resolution-check.cjs",
+        "httpError.ts",
+        "httpErrors.test.ts"
+        
       ],
       "tests": [
         "course-tests/public/week-09.test.ts",
@@ -52,7 +55,7 @@
       "reviews": [],
       "prediction": "planRetry debe respetar Retry-After, no reintentar desde el intento 4 y exigir clave de idempotencia estable en POST para no duplicar efectos tras una respuesta perdida.",
       "command": "npm.cmd test -- --runInBand course-tests/public/week-09.test.ts src/course-evaluation/week09Retry.test.ts",
-      "observedResult": "Integrado en main (PR #11 / df092e6). planRetry y escenarios de POST con/sin clave y tope de intentos quedan cubiertos por las pruebas públicas y focalizadas de reintento.",
+      "observedResult": "Integrado en main (PR #11 / df092e6). planRetry y escenarios de POST con/sin clave y tope de intentos quedan cubiertos por las pruebas públicas y focalizadas de reintento. 22 pruebas / 5 suites + un solo resolve en retry-lost.",
       "explanation": "David implementó la política de reintentos acotados, integración con el cliente HTTP e idempotencia de operaciones con efecto. No se le atribuye el adaptador de mapas ni la UI/reportes de cierre de Dulce."
     },
     {
@@ -66,7 +69,8 @@
         "reports/week-09/fault-injection.json",
         "reports/week-09/retry-metrics.json",
         "evidence/week-09/engineering.json",
-        "evidence/week-09/individual.json"
+        "evidence/week-09/individual.json",
+        "src/bootstrap/CampusOpsRoot.tsx"
       ],
       "tests": [
         "course-tests/public/week-09.test.ts",
@@ -77,7 +81,7 @@
       ],
       "prediction": "Si el proveedor no está disponible, la interfaz debe permitir escribir edificio/zona/referencia y continuar con source=manual, sin inventar coordenadas ni presentar un fallo como ubicación obtenida del proveedor.",
       "command": "npm.cmd test -- --runInBand course-tests/public/week-09.test.ts src/ui/IncidentApp.location.test.tsx",
-      "observedResult": "PASS local: pruebas públicas week-09 y camino UI de ubicación manual/proveedor. typecheck sin errores. Reportes y evidencia de los tres integrantes consolidados para el cierre.",
+      "observedResult": "smoke PASS, location tests PASS (2), week-09 públicos, test:retry-lost-resolution PASS. Integrado en main (PR #12 / 85f7e3e). La UI de ubicación manual y la integración con el adaptador/caché y planRetry quedan cubiertas por las pruebas públicas y focalizadas.",
       "explanation": "Dulce implementó el flujo visible de ubicación manual en IncidentApp, pruebas de integración del camino manual, y consolidó reports/week-09 y evidence/week-09 del equipo. No se atribuye el adaptador de Marco ni planRetry de David."
     }
   ]
