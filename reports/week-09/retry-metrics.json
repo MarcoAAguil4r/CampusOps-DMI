@@ -1,0 +1,36 @@
+{
+  "schemaVersion": 1,
+  "week": 9,
+  "commitSha": "63a0fb7604eb500e095c9a34a96325a1c432d39a",
+  "generatedAt": "2026-11-03T02:50:00.000Z",
+  "checks": [
+    {
+      "id": "retry-after-800ms-single-plan",
+      "status": "pass",
+      "scenarioType": "boundary",
+      "command": "npm.cmd test -- --runInBand course-tests/public/week-09.test.ts",
+      "evidence": "Observado: attempts=1, delayMsObserved=800, duplicatedEffects=0. planRetry GET 429 attempt 1 con Retry-After 800 ms produce un solo plan de reintento."
+    },
+    {
+      "id": "no-retry-from-attempt-4",
+      "status": "pass",
+      "scenarioType": "boundary",
+      "command": "npm.cmd test -- --runInBand course-tests/public/week-09.test.ts",
+      "evidence": "Observado: attempts=4, delayMsObserved=0, duplicatedEffects=0. planRetry timeout attempt 4 → retry false."
+    },
+    {
+      "id": "post-without-stable-key-not-retried",
+      "status": "pass",
+      "scenarioType": "failure",
+      "command": "npm.cmd test -- --runInBand course-tests/public/week-09.test.ts",
+      "evidence": "Observado: attempts=1, delayMsObserved=0, duplicatedEffects=0. POST 503 sin idempotencyKey no reintenta; evita duplicar resolución/cierre."
+    },
+    {
+      "id": "lost-resolution-with-stable-key-may-retry-once-plan",
+      "status": "pass",
+      "scenarioType": "failure",
+      "command": "npm.cmd test -- --runInBand course-tests/public/week-09.test.ts",
+      "evidence": "Observado: POST timeout attempt 1 con clave resolve-campus-inc-001-op-1 → retry true y requiresStableIdempotencyKey false; la misma identidad se reutiliza al reintentar."
+    }
+  ]
+}

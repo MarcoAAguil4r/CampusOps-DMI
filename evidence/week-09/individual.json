@@ -1,0 +1,84 @@
+{
+  "schemaVersion": 1,
+  "week": 9,
+  "teamId": "E01",
+  "members": [
+    {
+      "studentId": "3523110229",
+      "commitShas": [
+        "06fc7842c255643252745e2200985f6b294e7f23"
+      ],
+      "files": [
+        "docs/resilience-policy.md",
+        "src/domain/ports/GeocodingPort.ts",
+        "src/infrastructure/GeocodingHttpAdapter.ts",
+        "src/infrastructure/GeocodingHttpAdapter.test.ts",
+        "src/infrastructure/CachedGeocodingAdapter.ts",
+        "src/infrastructure/CachedGeocodingAdapter.test.ts",
+        "src/course-evaluation/index.ts",
+        "src/course-evaluation/week09-location.test.ts"
+      ],
+      "tests": [
+        "src/infrastructure/GeocodingHttpAdapter.test.ts",
+        "src/infrastructure/CachedGeocodingAdapter.test.ts",
+        "src/course-evaluation/week09-location.test.ts",
+        "course-tests/public/week-09.test.ts"
+      ],
+      "reviews": [],
+      "prediction": "El adaptador y la caché deben devolver ubicaciones solo con etiqueta y coordenadas válidas; timeout, 429 o datos inválidos no deben presentarse como coordenadas reales.",
+      "command": "npm.cmd test -- --runInBand course-tests/public/week-09.test.ts src/course-evaluation/week09-location.test.ts src/infrastructure/CachedGeocodingAdapter.test.ts",
+      "observedResult": "Integrado en main (PR #9 / 06fc784). Las pruebas públicas de selectIncidentLocation y las focalizadas de adaptador/caché forman parte de la base verificada del equipo antes del cierre.",
+      "explanation": "Marco implementó el puerto/adaptador de geocodificación, caché, selectIncidentLocation y documentación de resiliencia. No se le atribuye planRetry ni la UI de cierre."
+    },
+    {
+      "studentId": "3522110617",
+      "commitShas": [
+        "df092e670d2b9074ff6103e010dff85539ef81aa"
+      ],
+      "files": [
+        "src/course-evaluation/index.ts",
+        "src/course-evaluation/week09Retry.test.ts",
+        "src/infrastructure/CampusOpsApiClient.ts",
+        "src/infrastructure/CampusOpsApiClient.test.ts",
+        "src/infrastructure/RemoteIncidentRepository.ts",
+        "docs/resilience-policy.md",
+        "tools/retry-lost-resolution-check.cjs"
+      ],
+      "tests": [
+        "course-tests/public/week-09.test.ts",
+        "src/course-evaluation/week09Retry.test.ts",
+        "src/infrastructure/CampusOpsApiClient.test.ts"
+      ],
+      "reviews": [],
+      "prediction": "planRetry debe respetar Retry-After, no reintentar desde el intento 4 y exigir clave de idempotencia estable en POST para no duplicar efectos tras una respuesta perdida.",
+      "command": "npm.cmd test -- --runInBand course-tests/public/week-09.test.ts src/course-evaluation/week09Retry.test.ts",
+      "observedResult": "Integrado en main (PR #11 / df092e6). planRetry y escenarios de POST con/sin clave y tope de intentos quedan cubiertos por las pruebas públicas y focalizadas de reintento.",
+      "explanation": "David implementó la política de reintentos acotados, integración con el cliente HTTP e idempotencia de operaciones con efecto. No se le atribuye el adaptador de mapas ni la UI/reportes de cierre de Dulce."
+    },
+    {
+      "studentId": "3523110484",
+      "commitShas": [
+        "REEMPLAZAR_SHA_DULCE_40_CHARS"
+      ],
+      "files": [
+        "src/ui/IncidentApp.tsx",
+        "src/ui/IncidentApp.location.test.tsx",
+        "reports/week-09/fault-injection.json",
+        "reports/week-09/retry-metrics.json",
+        "evidence/week-09/engineering.json",
+        "evidence/week-09/individual.json"
+      ],
+      "tests": [
+        "course-tests/public/week-09.test.ts",
+        "src/ui/IncidentApp.location.test.tsx"
+      ],
+      "reviews": [
+        "Revisión de la base en main con adaptador/caché (Marco) y planRetry/idempotencia (David) antes de conectar la UI y consolidar reportes/evidencias de Semana 9."
+      ],
+      "prediction": "Si el proveedor no está disponible, la interfaz debe permitir escribir edificio/zona/referencia y continuar con source=manual, sin inventar coordenadas ni presentar un fallo como ubicación obtenida del proveedor.",
+      "command": "npm.cmd test -- --runInBand course-tests/public/week-09.test.ts src/ui/IncidentApp.location.test.tsx",
+      "observedResult": "PASS local: pruebas públicas week-09 y camino UI de ubicación manual/proveedor. typecheck sin errores. Reportes y evidencia de los tres integrantes consolidados para el cierre.",
+      "explanation": "Dulce implementó el flujo visible de ubicación manual en IncidentApp, pruebas de integración del camino manual, y consolidó reports/week-09 y evidence/week-09 del equipo. No se atribuye el adaptador de Marco ni planRetry de David."
+    }
+  ]
+}
