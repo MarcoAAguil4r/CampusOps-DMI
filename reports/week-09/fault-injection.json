@@ -1,8 +1,8 @@
 {
   "schemaVersion": 1,
   "week": 9,
-  "commitSha": "1c510e006c4c6e53e68d6203553a242626a16baf",
-  "generatedAt": "2026-11-03T02:50:00.000Z",
+  "commitSha": "44b5cca69b4fb6710e71388c26a2a25ad7891d52",
+  "generatedAt": "2026-11-03T01:50:45-06:00",
   "checks": [
     {
       "id": "valid-provider-location-accepted",
@@ -19,18 +19,25 @@
       "evidence": "PASS: null, {status:429}, objeto incompleto y latitude 91 caen a source=manual con la etiqueta escrita; no se inventan coordenadas."
     },
     {
-      "id": "lost-post-response-requires-stable-idempotency-key",
+      "id": "lost-post-response-plan-requires-stable-key",
       "status": "pass",
       "scenarioType": "failure",
       "command": "npm.cmd test -- --runInBand course-tests/public/week-09.test.ts",
-      "evidence": "PASS: POST timeout attempt 1 con idempotencyKey estable → retry true; POST 503 sin clave → retry false y requiresStableIdempotencyKey true (no se duplica efecto)."
+      "evidence": "PASS (decision calculada por planRetry): POST timeout attempt 1 con idempotencyKey estable devuelve retry true; POST 503 sin clave devuelve retry false y requiresStableIdempotencyKey true. La prueba verifica la decision devuelta, no solicitudes enviadas ni efectos en el servidor."
     },
     {
       "id": "retry-after-and-attempt-cap",
       "status": "pass",
       "scenarioType": "boundary",
       "command": "npm.cmd test -- --runInBand course-tests/public/week-09.test.ts",
-      "evidence": "PASS: GET 429 attempt 1 con retryAfterMs 800 → delayMs 800; timeout attempt 4 → retry false (no bucle desde el intento 4)."
+      "evidence": "PASS (decision calculada): GET 429 attempt 1 con retryAfterMs 800 devuelve delayMs 800; timeout attempt 4 devuelve retry false."
+    },
+    {
+      "id": "lost-resolution-observed-on-delivery-version",
+      "status": "pass",
+      "scenarioType": "failure",
+      "command": "npm.cmd run test:retry-lost-resolution",
+      "evidence": "Observado sobre la version 44b5cca69b4fb6710e71388c26a2a25ad7891d52: dos envios con la misma Idempotency-Key y el mismo cuerpo, y un solo evento resolve en el backend controlado. Salida: Lost resolution response check: replayed same key/body; one resolve history event PASS."
     }
   ]
 }
