@@ -8,6 +8,8 @@ import { fictitiousIncidents } from '../infrastructure/InMemoryIncidentRepositor
 import { openCampusOpsDatabase } from '../infrastructure/openCampusOpsDatabase';
 import { SQLiteIncidentRepository } from '../infrastructure/SQLiteIncidentRepository';
 import { IncidentApp } from '../ui/IncidentApp';
+import { GeocodingHttpAdapter } from '../infrastructure/GeocodingHttpAdapter';
+import { CachedGeocodingAdapter } from '../infrastructure/CachedGeocodingAdapter';
 
 const campusOps = new CampusOpsApplication(new CourseBackendHealthAdapter());
 
@@ -59,5 +61,9 @@ export default function CampusOpsRoot() {
     return <ActivityIndicator accessibilityLabel="Inicializando almacenamiento local" />;
   }
 
-  return <IncidentApp campusOps={campusOps} incidents={incidents} />;
+  const geocoding = new CachedGeocodingAdapter(new GeocodingHttpAdapter());
+
+  return (
+    <IncidentApp campusOps={campusOps} incidents={incidents} geocoding={geocoding} />
+  );
 }

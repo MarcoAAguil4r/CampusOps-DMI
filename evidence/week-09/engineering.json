@@ -1,0 +1,30 @@
+{
+  "schemaVersion": 1,
+  "week": 9,
+  "commitSha": "1c510e006c4c6e53e68d6203553a242626a16baf",
+  "decision": "CampusOps integra geocodificación detrás de puerto/adaptador con caché y selectIncidentLocation: solo acepta etiqueta no vacía y coordenadas finitas en rango; si el proveedor devuelve null, 429, datos incompletos o inválidos, se continúa con ubicación manual sin inventar coordenadas. Los reintentos usan planRetry con Retry-After acotado, tope attempt<4 y POST únicamente con clave de idempotencia estable, de modo que una respuesta perdida tras guardar no duplique efectos. La UI expone el camino manual cuando el proveedor no sirve.",
+  "alternatives": [
+    "Reintentar indefinidamente cualquier error de red o HTTP hasta obtener respuesta.",
+    "Inventar coordenadas por defecto (0,0) cuando el proveedor falla para no bloquear el alta de incidencias.",
+    "Aceptar solo ubicación del proveedor y bloquear el flujo si hay timeout o 429."
+  ],
+  "tradeoff": "El fallback manual y los reintentos acotados aumentan código de UI y política, pero evitan bucles, coordenadas falsas y POST duplicados. El doble controlado (p. ej. 429 simulado) permite pruebas reproducibles sin depender de cuotas externas; no sustituye una corrida larga contra un proveedor de mapas de producción. audit:ci puede seguir fallando por vulnerabilidades transitivas documentadas en el equipo.",
+  "requirementIds": ["AC-01", "AC-02", "AC-03", "AC-04", "AC-05"],
+  "verification": [
+    {
+      "command": "npm.cmd test -- --runInBand course-tests/public/week-09.test.ts",
+      "result": "pass",
+      "evidence": "4 pruebas públicas: ubicación válida/manual, planRetry con clave estable, Retry-After y tope attempt 4, POST sin clave no reintenta."
+    },
+    {
+      "command": "npm.cmd test -- --runInBand src/ui/IncidentApp.location.test.tsx",
+      "result": "pass",
+      "evidence": "Camino UI: fallo de proveedor conserva label manual sin latitude; proveedor válido se acepta."
+    },
+    {
+      "command": "npm.cmd run typecheck",
+      "result": "pass",
+      "evidence": "tsc --noEmit sin errores tras integrar UI de ubicación manual."
+    }
+  ]
+}

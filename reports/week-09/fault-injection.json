@@ -1,0 +1,36 @@
+{
+  "schemaVersion": 1,
+  "week": 9,
+  "commitSha": "1c510e006c4c6e53e68d6203553a242626a16baf",
+  "generatedAt": "2026-11-03T02:50:00.000Z",
+  "checks": [
+    {
+      "id": "valid-provider-location-accepted",
+      "status": "pass",
+      "scenarioType": "nominal",
+      "command": "npm.cmd test -- --runInBand course-tests/public/week-09.test.ts",
+      "evidence": "PASS: selectIncidentLocation con label y coordenadas finitas en rango devuelve source=provider con label/latitude/longitude."
+    },
+    {
+      "id": "invalid-or-unavailable-provider-manual-fallback",
+      "status": "pass",
+      "scenarioType": "failure",
+      "command": "npm.cmd test -- --runInBand course-tests/public/week-09.test.ts src/ui/IncidentApp.location.test.tsx",
+      "evidence": "PASS: null, {status:429}, objeto incompleto y latitude 91 caen a source=manual con la etiqueta escrita; no se inventan coordenadas."
+    },
+    {
+      "id": "lost-post-response-requires-stable-idempotency-key",
+      "status": "pass",
+      "scenarioType": "failure",
+      "command": "npm.cmd test -- --runInBand course-tests/public/week-09.test.ts",
+      "evidence": "PASS: POST timeout attempt 1 con idempotencyKey estable → retry true; POST 503 sin clave → retry false y requiresStableIdempotencyKey true (no se duplica efecto)."
+    },
+    {
+      "id": "retry-after-and-attempt-cap",
+      "status": "pass",
+      "scenarioType": "boundary",
+      "command": "npm.cmd test -- --runInBand course-tests/public/week-09.test.ts",
+      "evidence": "PASS: GET 429 attempt 1 con retryAfterMs 800 → delayMs 800; timeout attempt 4 → retry false (no bucle desde el intento 4)."
+    }
+  ]
+}
